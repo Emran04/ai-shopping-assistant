@@ -1,0 +1,1 @@
+This is an ecommerce AI assistant for ecommerce application. Which can answer to users question and show related products according to customer's query.

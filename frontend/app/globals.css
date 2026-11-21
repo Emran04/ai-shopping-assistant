@@ -1,0 +1,290 @@
+:root {
+  color-scheme: light;
+  --paper: #f6f3e9;
+  --surface: #fffdf7;
+  --ink: #172b25;
+  --muted: #4a5c52;
+  --line: #d7dbcf;
+  --accent: #d9ed91;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font: 1rem/1.55 "Avenir Next", Avenir, "Segoe UI", sans-serif;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+button:not(:disabled) {
+  cursor: pointer;
+}
+
+:focus-visible {
+  outline: 2px solid #3c694a;
+  outline-offset: 3px;
+}
+
+.site-shell {
+  width: min(100% - 3rem, 72rem);
+  margin-inline: auto;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  min-height: 5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.wordmark {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  font-size: 0.9rem;
+  font-weight: 700;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+  background: var(--ink);
+  color: var(--accent);
+  font: italic 1.55rem/1 Georgia, serif;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: start;
+  gap: clamp(2rem, 5vw, 5rem);
+  padding-block: clamp(3rem, 13vh, 9rem) 3rem;
+}
+
+.intro {
+  padding-top: 1.25rem;
+}
+
+h1 {
+  margin: 0;
+  font: 400 clamp(2.75rem, 5.4vw, 5rem)/0.99 Georgia, serif;
+  letter-spacing: -0.065em;
+}
+
+.intro p {
+  max-width: 29ch;
+  margin: 1.6rem 0 0;
+  color: var(--muted);
+  font-size: 1.0625rem;
+}
+
+.chat {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 1.125rem;
+  background: var(--surface);
+  box-shadow: 0 16px 40px -26px #172b2540;
+}
+
+.chat-header {
+  padding: 1rem 1.25rem;
+  background: var(--ink);
+  color: var(--surface);
+}
+
+.chat-header h2 {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 650;
+}
+
+.chat-content {
+  display: grid;
+  min-height: 15rem;
+}
+
+.suggestions {
+  align-self: end;
+  padding: 1.25rem;
+}
+
+.suggestions p {
+  margin: 0 0 0.65rem;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.suggestion-list button {
+  min-height: 2.5rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.825rem;
+}
+
+.suggestion-list button:hover {
+  border-color: #929f78;
+  background: #eef3dc;
+}
+
+.suggestion-list span,
+.send span {
+  margin-left: 0.2em;
+}
+
+.thread:empty {
+  display: none;
+}
+
+.thread {
+  max-height: min(28rem, 50vh);
+  overflow: auto;
+  padding: 1.25rem;
+}
+
+.thread:focus-visible {
+  outline-offset: -3px;
+}
+
+.exchange {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.exchange + .exchange {
+  margin-top: 1.25rem;
+}
+
+.message {
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 0.7rem;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.user-message {
+  justify-self: end;
+  background: var(--accent);
+}
+
+.assistant-message {
+  background: #edf0e8;
+}
+
+.pending,
+.error {
+  margin: 0;
+  font-size: 0.85rem;
+}
+
+.pending {
+  color: var(--muted);
+}
+
+.error {
+  padding: 0 1.25rem 0.75rem;
+  color: #962f28;
+}
+
+.composer {
+  display: flex;
+  gap: 0.65rem;
+  padding: 0.85rem;
+  border-top: 1px solid var(--line);
+}
+
+.composer input {
+  flex: 1;
+  min-width: 0;
+  padding: 0.65rem 0.75rem;
+  border: 1px solid var(--line);
+  border-radius: 0.5rem;
+  background: #fff;
+  color: var(--ink);
+}
+
+.composer input::placeholder {
+  color: var(--muted);
+}
+
+.send {
+  padding-inline: 0.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: var(--ink);
+  color: var(--surface);
+  font-weight: 650;
+}
+
+.send:hover:not(:disabled) {
+  background: #2e493a;
+}
+
+.send:disabled {
+  background: #e4e8dd;
+  color: var(--muted);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+@media (max-width: 48rem) {
+  .workspace {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2rem;
+    padding-top: 2.5rem;
+  }
+
+  .intro {
+    padding: 0;
+  }
+
+  .desktop-break {
+    display: none;
+  }
+
+  .intro p {
+    margin-top: 1rem;
+  }
+}
+
+@media (max-width: 26rem) {
+  .site-shell {
+    width: calc(100% - 2rem);
+  }
+
+  .composer {
+    gap: 0.5rem;
+    padding: 0.7rem;
+  }
+}

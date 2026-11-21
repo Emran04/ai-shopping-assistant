@@ -1,0 +1,12 @@
+fastapi[standard]
+langgraph
+langchain
+langchain_openai
+# --- Data & validation ---
+pydantic
+pydantic-settings                # typed configuration loaded from the environment / .env
+
+# --- Observability ---
+logfire[fastapi]                 # tracing + FastAPI / Pydantic / Pydantic-AI instrumentation
+
+python-dotenv

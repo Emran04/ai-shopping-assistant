@@ -1,0 +1,15 @@
+[project]
+name = "ecomm-assistant"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "fastapi[standard]>=0.165.0",
+    "langchain>=1.5.2",
+    "langchain-openai>=1.8.5",
+    "langgraph>=1.2.24",
+    "logfire[fastapi]>=6.0.0",
+    "pydantic>=2.14.4",
+    "pydantic-settings>=2.16.3",
+]
