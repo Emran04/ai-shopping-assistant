@@ -2,12 +2,18 @@ import asyncio
 import json
 import unittest
 from contextlib import AsyncExitStack
-from uuid import uuid4
+from pathlib import Path
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
+from uuid import UUID, uuid4
 
 from httpx import ASGITransport, AsyncClient
 from langchain_core.messages import AIMessage
+from sqlmodel import create_engine
 
-from main import create_app
+from chatbot.quota import reset_usage
+from main import CHAT_COOKIE, create_app
+from models import ChatCustomer
 
 
 class FakeModel:
@@ -39,6 +45,10 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
         self.app = create_app(self.model)
         stack = AsyncExitStack()
         self.addAsyncCleanup(stack.aclose)
+        directory = stack.enter_context(TemporaryDirectory())
+        self.engine = create_engine(f"sqlite:///{Path(directory) / 'chat.db'}")
+        ChatCustomer.__table__.create(self.engine)
+        stack.enter_context(patch("main.create_database_engine", return_value=self.engine))
         await stack.enter_async_context(self.app.router.lifespan_context(self.app))
         self.client = await stack.enter_async_context(
             AsyncClient(transport=ASGITransport(app=self.app), base_url="http://test")
@@ -92,6 +102,7 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(self.model.calls[-1], ["first", "FIRST", "next"])
 
     async def test_same_thread_waits_without_blocking_other_threads(self):
+        await self.client.post("/chat/session")
         async with asyncio.timeout(5), asyncio.TaskGroup() as tasks:
             first = tasks.create_task(self.send("wait", path="/chat/stream"))
             await self.model.blocked.wait()
@@ -119,7 +130,10 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
             "type": "http",
             "method": "POST",
             "path": "/chat/stream",
-            "headers": [(b"content-type", b"application/json")],
+            "headers": [
+                (b"content-type", b"application/json"),
+                (b"cookie", f"{CHAT_COOKIE}={self.client.cookies[CHAT_COOKIE]}".encode()),
+            ],
             "query_string": b"",
             "scheme": "http",
         }
@@ -136,3 +150,52 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
         async with self.app.router.lifespan_context(self.app):
             await self.send("next")
         self.assertEqual(self.model.calls[-1], ["next"])
+
+    async def test_quota_is_shared_by_threads_and_survives_restart_until_staff_reset(self):
+        with patch.dict("os.environ", {"CHAT_MESSAGE_LIMIT": "2"}):
+            async with self.app.router.lifespan_context(self.app):
+                session = await self.client.post("/chat/session")
+                self.assertEqual(session.status_code, 200, session.text)
+                customer = session.json()["customer_id"]
+                self.assertIn("HttpOnly", session.headers["set-cookie"])
+                self.assertNotIn(customer, session.headers["set-cookie"])
+                self.assertEqual(session.json()["messages_remaining"], 2)
+
+                first = await self.send("first", message_id="one")
+                self.assertEqual(first.headers["x-chat-messages-remaining"], "1")
+                last = await self.send("last", path="/chat/stream", thread_id=str(uuid4()))
+                self.assertEqual(last.headers["x-chat-messages-remaining"], "0")
+                self.assertEqual(stream_events(last)[-1], {"type": "done"})
+                self.assertEqual((await self.send("first", message_id="one")).json(), {"reply": "FIRST"})
+
+            async with self.app.router.lifespan_context(self.app):
+                session = await self.client.post("/chat/session")
+                self.assertEqual(session.json()["customer_id"], customer)
+                self.assertEqual(session.json()["messages_remaining"], 0)
+                for path in ("/chat", "/chat/stream"):
+                    blocked = await self.send("blocked", path=path, thread_id=str(uuid4()))
+                    self.assertEqual(blocked.status_code, 429)
+                    self.assertIn(customer, blocked.json()["detail"])
+                self.assertEqual(self.model.calls, [["first"], ["last"]])
+
+                async with AsyncClient(transport=ASGITransport(app=self.app), base_url="http://test") as other:
+                    response = await other.post("/chat", json={"message": "other", "thread_id": self.thread})
+                    self.assertEqual(response.status_code, 200)
+                    self.assertNotEqual(response.headers["x-chat-customer-id"], customer)
+
+                self.assertTrue(reset_usage(self.engine, UUID(customer)))
+                restored = await self.client.post("/chat/session")
+                self.assertEqual(restored.json()["messages_remaining"], 2)
+                self.assertEqual((await self.send("restored")).json(), {"reply": "RESTORED"})
+
+    async def test_concurrent_threads_cannot_both_claim_the_last_message(self):
+        self.app.state.chat_message_limit = 1
+        await self.client.post("/chat/session")
+        async with asyncio.timeout(5), asyncio.TaskGroup() as tasks:
+            first = tasks.create_task(self.send("wait", path="/chat/stream"))
+            await self.model.blocked.wait()
+            blocked = await self.send("extra", thread_id=str(uuid4()))
+            self.assertEqual(blocked.status_code, 429)
+            self.model.release.set()
+        self.assertEqual(stream_events(first.result())[-1], {"type": "done"})
+        self.assertEqual(self.model.calls, [["wait"]])

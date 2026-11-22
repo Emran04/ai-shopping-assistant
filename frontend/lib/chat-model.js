@@ -1,6 +1,27 @@
 const streamType = "application/x-ndjson";
 
-export function createChatModel() {
+function chatQuota(response) {
+  const customerId = response.headers.get("X-Chat-Customer-Id");
+  const supportPhone = response.headers.get("X-Chat-Support-Phone");
+  const remaining = response.headers.get("X-Chat-Messages-Remaining");
+  if (customerId && supportPhone && remaining !== null) {
+    return { customerId, supportPhone, remaining: Number(remaining) };
+  }
+  return null;
+}
+
+export async function checkChatQuota(signal) {
+  const request = () => fetch("/api/chat/session", { method: "POST", signal });
+  // Serialize initial cookie issuance when the panel is opened in multiple tabs.
+  const response = navigator.locks
+    ? await navigator.locks.request("shopping-chat-session", { signal }, request)
+    : await request();
+  const quota = response.ok && chatQuota(response);
+  if (!quota) throw new Error("Could not check your chat allowance. Try again.");
+  return quota;
+}
+
+export function createChatModel(onQuota) {
   let threadId;
 
   async function* run({ messages, abortSignal }) {
@@ -20,8 +41,11 @@ export function createChatModel() {
         signal: abortSignal,
       });
 
+      const quota = chatQuota(response);
+      if (quota) onQuota(quota);
       if (!response.ok) {
         const data = await response.json().catch(() => null);
+        if (response.status === 429 && quota?.remaining === 0) throw new Error("Chat limit reached.");
         throw new Error(data?.detail || "The assistant could not answer. Try again.");
       }
       if (!response.body || response.headers.get("content-type")?.split(";")[0] !== streamType) {

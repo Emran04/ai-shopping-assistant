@@ -11,7 +11,6 @@ from sqlmodel import Session
 from .queries import ProductFilters, search_products
 from .service import CatalogError
 
-
 logger = logging.getLogger(__name__)
 CHAT_PRODUCT_LIMIT = 8
 

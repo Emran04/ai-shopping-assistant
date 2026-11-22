@@ -131,4 +131,17 @@ CATALOG_TEST_DATABASE_URL=postgresql://user:password@localhost/catalog_test \
 
 Open **Shopping chat** in the bottom-right corner. FastAPI streams text to the panel as the model generates it, and **Stop** cancels the current reply. The assistant remembers completed turns in the loaded page, including when you close and reopen the panel. Reloading the page starts a new chat. History lives in one FastAPI process and is cleared when that process restarts.
 
-FastAPI serves newline-delimited JSON at `POST /chat/stream`. Text comes in `delta` events. When products match, a `products` event carries up to eight catalog summaries before `done`. Failed streams end with an `error` event. `POST /chat` returns `reply` and includes `products` when there are matches. Both accept `message` and an optional UUID `thread_id`. Reuse the same thread ID for follow-ups and optionally send a stable `message_id` to make retries safe. Requests without a thread ID are independent.
+Opening the panel creates a customer reference and gives that browser 20 messages by default. Set `CHAT_MESSAGE_LIMIT` in `backend/.env` to a positive integer and restart the API to change the allowance. Usage lives in PostgreSQL after migration `0004` and follows the browser cookie across page reloads and API restarts. Clearing cookies or using another browser starts a separate allowance. Each accepted message uses one slot, including replies that fail or are stopped. Replaying a completed reply from the thread’s in-memory cache uses no additional slots.
+
+At the limit, the panel shows the customer care number and the reference the customer should share. Staff can restore the allowance by running one of these commands from the repository root, with the customer's reference in place of `CUSTOMER_ID`.
+
+```sh
+uv --directory backend run --locked python -m chatbot reset-quota CUSTOMER_ID
+docker compose exec api python -m chatbot reset-quota CUSTOMER_ID
+```
+
+The customer can select **Check again** or reopen the panel to resume chatting after the reset.
+
+FastAPI serves newline-delimited JSON at `POST /chat/stream`. Text comes in `delta` events. When products match, a `products` event carries up to eight catalog summaries before `done`. Failed streams end with an `error` event. `POST /chat` returns `reply` and includes `products` when there are matches. Both accept `message` and an optional UUID `thread_id`. Reuse the same thread ID for follow-ups and optionally send a stable `message_id` to replay a completed reply. Requests without a thread ID have independent histories and share the same customer allowance.
+
+API clients can open or check an allowance via `POST /chat/session`. Keep sending the `ecomm_chat_customer` cookie to retain the same allowance. Either message endpoint can also issue the cookie on first use. The three endpoints return `X-Chat-Customer-Id`, `X-Chat-Messages-Remaining`, and `X-Chat-Support-Phone` headers with the allowance. New messages above the limit return HTTP 429.

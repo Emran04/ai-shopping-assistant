@@ -272,6 +272,28 @@ h1 {
   text-decoration: underline;
 }
 
+.chat-notice {
+  padding: 0.85rem 1.25rem;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+  font-size: 0.85rem;
+}
+
+.chat-notice p {
+  margin: 0.25rem 0;
+}
+
+.chat-notice a {
+  color: inherit;
+  text-underline-offset: 0.2em;
+}
+
+.chat-notice code {
+  display: block;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
 .composer {
   display: flex;
   gap: 0.65rem;

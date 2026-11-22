@@ -137,3 +137,18 @@ class MediaRetirement(SQLModel, table=True):
         primary_key=True, max_length=80, foreign_key="media_storage_locations.storage_id", ondelete="RESTRICT"
     )
     delete_after: datetime = Field(sa_type=DateTime(timezone=True), index=True)
+
+
+class ChatCustomer(SQLModel, table=True):
+    __tablename__ = "chat_customers"
+    __table_args__ = (
+        CheckConstraint("messages_used >= 0", name="ck_chat_customer_messages_used"),
+    )
+
+    id: UUID = Field(primary_key=True)
+    token_digest: str = Field(max_length=64, unique=True)
+    messages_used: int = Field(default=0, sa_column_kwargs={"server_default": "0"})
+    created_at: datetime | None = Field(
+        default=None, sa_type=DateTime(timezone=True), nullable=False,
+        sa_column_kwargs={"server_default": func.now()},
+    )

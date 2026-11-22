@@ -79,10 +79,11 @@ async def cached_reply(graph, config: RunnableConfig | None, message: HumanMessa
 
 async def run_reply(
     graph, message: HumanMessage, model_name: str, config: RunnableConfig | None = None,
+    *, cached: AIMessage | None,
 ) -> AIMessage:
     with logfire.span("Run assistant graph", model=model_name) as span:
         try:
-            reply = await cached_reply(graph, config, message)
+            reply = cached
             if reply is None:
                 state = await graph.ainvoke({"pending_message": message}, config)
                 reply = state["reply"]
@@ -102,10 +103,11 @@ async def run_reply(
 
 async def stream_reply(
     graph, message: HumanMessage, model_name: str, config: RunnableConfig | None = None,
+    *, cached: AIMessage | None,
 ) -> AsyncGenerator[dict]:
     with logfire.span("Stream assistant graph", model=model_name) as span:
         try:
-            reply = await cached_reply(graph, config, message)
+            reply = cached
             if reply is not None:
                 yield {"type": "delta", "text": reply.text}
             else:

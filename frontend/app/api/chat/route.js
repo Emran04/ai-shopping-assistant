@@ -1,3 +1,5 @@
+import { chatBackendRequest, chatResponseHeaders } from "../../../lib/chat-api";
+
 const streamType = "application/x-ndjson";
 
 export async function POST(request) {
@@ -10,28 +12,21 @@ export async function POST(request) {
 
   const streaming = request.headers.get("accept") === streamType;
   try {
-    const backendUrl = process.env.FASTAPI_URL || "http://127.0.0.1:8000";
     const path = streaming ? "/chat/stream" : "/chat";
-    const response = await fetch(new URL(path, backendUrl), {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message, thread_id: body.thread_id, message_id: body.message_id }),
-      cache: "no-store",
-      signal: AbortSignal.any([request.signal, AbortSignal.timeout(streaming ? 120_000 : 35_000)]),
+    const response = await chatBackendRequest(request, path, streaming ? 120_000 : 35_000, {
+      message, thread_id: body.thread_id, message_id: body.message_id,
     });
+    const headers = chatResponseHeaders(request, response);
 
     if (streaming && response.ok) {
       if (response.body && response.headers.get("content-type")?.split(";")[0] === streamType) {
-        return new Response(response.body, {
-          headers: {
-            "Content-Type": streamType,
-            "Cache-Control": "no-cache, no-transform",
-            "X-Accel-Buffering": "no",
-          },
-        });
+        headers.set("Content-Type", streamType);
+        headers.set("Cache-Control", "no-store, no-transform");
+        headers.set("X-Accel-Buffering", "no");
+        return new Response(response.body, { headers });
       }
       await response.body?.cancel();
-      return Response.json({ detail: "The assistant returned an invalid stream." }, { status: 502 });
+      return Response.json({ detail: "The assistant returned an invalid stream." }, { status: 502, headers });
     }
 
     const data = await response.json();
@@ -40,13 +35,13 @@ export async function POST(request) {
       const detail = typeof data?.detail === "string"
         ? data.detail
         : "The assistant could not answer. Try again.";
-      return Response.json({ detail }, { status: response.status });
+      return Response.json({ detail }, { status: response.status, headers });
     }
 
     if (typeof data?.reply === "string") {
       const reply = { reply: data.reply };
       if (Array.isArray(data.products)) reply.products = data.products;
-      return Response.json(reply);
+      return Response.json(reply, { headers });
     }
   } catch (error) {
     if (error.name === "TimeoutError") {
