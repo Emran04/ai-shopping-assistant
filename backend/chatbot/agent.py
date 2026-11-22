@@ -2,14 +2,16 @@ from collections.abc import AsyncGenerator
 from contextlib import aclosing
 
 import logfire
-from langchain_core.messages import AIMessage, HumanMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langgraph.graph import END, START, MessagesState, StateGraph
 from openai import APIError, APITimeoutError
+
+from .llm import SYSTEM_PROMPT
 
 
 def build_graph(model):
     async def assistant(state: MessagesState):
-        reply = await model.ainvoke(state["messages"])
+        reply = await model.ainvoke([SystemMessage(content=SYSTEM_PROMPT), *state["messages"]])
         return {"messages": [reply]}
 
     # LangGraph accepts this TypedDict, but ty cannot match its state protocol.
