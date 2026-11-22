@@ -6,6 +6,6 @@ WHERE NOT EXISTS (SELECT FROM pg_roles WHERE rolname = 'admin')
 
 GRANT USAGE ON SCHEMA public TO admin;
 GRANT SELECT ON ALL TABLES IN SCHEMA public TO admin;
-GRANT INSERT ON TABLE public.products TO admin;
-GRANT USAGE ON SEQUENCE public.products_id_seq TO admin;
+REVOKE INSERT ON TABLE public.products FROM admin;
+REVOKE USAGE ON SEQUENCE public.products_id_seq FROM admin;
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT SELECT ON TABLES TO admin;

@@ -3,8 +3,9 @@ from contextlib import aclosing
 from typing import Annotated
 
 import logfire
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
+from langchain_core.tools import BaseTool
 from langgraph.channels import UntrackedValue
 from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
@@ -18,14 +19,32 @@ class ChatState(MessagesState):
     reply_text: Annotated[str, UntrackedValue]
 
 
-def build_graph(model, checkpointer: InMemorySaver | None = None):
+def build_graph(
+    model, checkpointer: InMemorySaver | None = None, *,
+    catalog_tool: BaseTool | None = None, currency: str | None = None,
+):
+    tool_model = model.bind_tools([catalog_tool], parallel_tool_calls=False) if catalog_tool else model
+    prompt = SYSTEM_PROMPT
+    if currency:
+        prompt += f"\nThe catalog currency is {currency}. Clarify any budget stated in a different currency."
+
     async def assistant(state: ChatState):
         pending = state["pending_message"]
-        reply = await model.ainvoke([
-            SystemMessage(content=SYSTEM_PROMPT),
+        messages = [
+            SystemMessage(content=prompt),
             *state.get("messages", []),
             pending,
-        ])
+        ]
+        reply = await tool_model.ainvoke(messages)
+        if catalog_tool and reply.tool_calls:
+            results = []
+            for call in reply.tool_calls:
+                if call["name"] == catalog_tool.name:
+                    results.append(await catalog_tool.ainvoke(call))
+                else:
+                    results.append(ToolMessage("Unknown catalog tool.", tool_call_id=call["id"]))
+            final = await model.ainvoke([*messages, reply, *results])
+            reply = AIMessage(id=final.id, content=reply.text + final.text)
         if not reply.text.strip():
             return {"reply_text": reply.text}
         return {"reply_text": reply.text, "messages": [pending, reply]}

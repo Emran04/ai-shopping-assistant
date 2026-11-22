@@ -7,6 +7,10 @@ from uuid import UUID
 from weakref import WeakValueDictionary
 
 import logfire
+from catalog.chat import product_search_tool
+from catalog.routes import router as catalog_router
+from catalog.service import CatalogSettings
+from catalog.storage import R2Storage
 from chatbot.agent import build_graph, run_reply, stream_reply
 from chatbot.llm import Settings, create_chat_model
 from database import create_database_engine, get_session
@@ -85,19 +89,27 @@ def create_app(model=None):
     @asynccontextmanager
     async def lifespan(app):
         settings = Settings()
+        catalog_settings = CatalogSettings()
+        app.state.catalog_settings = catalog_settings
+        app.state.catalog_storage = R2Storage(catalog_settings)
         client = model if model is not None else create_chat_model(settings)
-        app.state.graph = build_graph(client) if client is not None else None
-        app.state.memory_graph = build_graph(client, InMemorySaver()) if client is not None else None
-        app.state.thread_locks = WeakValueDictionary()
-        app.state.model_name = settings.openai_model
         engine = create_database_engine()
-        app.state.database_engine = engine
         try:
+            catalog_tool = product_search_tool(engine, catalog_settings.currency) if hasattr(client, "bind_tools") else None
+            graph_options = {"catalog_tool": catalog_tool, "currency": catalog_settings.currency}
+            app.state.graph = build_graph(client, **graph_options) if client is not None else None
+            app.state.memory_graph = (
+                build_graph(client, InMemorySaver(), **graph_options) if client is not None else None
+            )
+            app.state.thread_locks = WeakValueDictionary()
+            app.state.model_name = settings.openai_model
+            app.state.database_engine = engine
             yield
         finally:
             engine.dispose()
 
     app = FastAPI(lifespan=lifespan)
+    app.include_router(catalog_router)
     logfire.configure(send_to_logfire="if-token-present")
     logfire.instrument_fastapi(app, capture_headers=False, request_attributes_mapper=lambda *_: {})
 

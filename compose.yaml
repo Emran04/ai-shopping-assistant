@@ -49,6 +49,18 @@ services:
       timeout: 5s
       retries: 10
 
+  catalog-maintenance:
+    <<: *backend
+    profiles: ["catalog"]
+    env_file:
+      - path: ./backend/.env.catalog-staff
+        required: false
+    command: ["python", "-m", "catalog", "maintain"]
+    restart: unless-stopped
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
   adminer-setup:
     image: *postgres-image
     environment:
