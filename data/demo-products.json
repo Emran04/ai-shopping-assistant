@@ -1,0 +1,2181 @@
+{
+  "schema_version": 1,
+  "currency": "USD",
+  "clothing_types": {
+    "t-shirts": "T-shirts",
+    "shirts": "Shirts",
+    "trousers": "Trousers",
+    "dresses": "Dresses",
+    "outerwear": "Outerwear",
+    "polo-shirts": "Polo Shirts",
+    "shorts": "Shorts",
+    "hoodies": "Hoodies",
+    "knitwear": "Knitwear",
+    "skirts": "Skirts",
+    "tops": "Tops",
+    "bodysuits": "Bodysuits",
+    "sleepwear": "Sleepwear"
+  },
+  "products": [
+    {
+      "key": "demo-men-01",
+      "name": "Heather Gray V-Neck Tee",
+      "slug": "demo-men-heather-gray-v-neck-tee",
+      "description": "Short sleeves and a deep V neckline in heather gray.",
+      "audience": "men",
+      "clothing_type": "t-shirts",
+      "price_minor": 1750,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-01-S",
+          "size": "S",
+          "color": "Heather Gray",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-MEN-01-M",
+          "size": "M",
+          "color": "Heather Gray",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-MEN-01-L",
+          "size": "L",
+          "color": "Heather Gray",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-01.jpg",
+        "alt_text": "Short sleeves and a deep V neckline in heather gray.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-01/original-7f02d11370722542956a07ee439fe049ebc936f0aae55dc8efe0daaefa354c91.jpg",
+        "thumbnail_key": "demo-products/demo-men-01/thumbnail-4926d05ce342f5e52488c2945f2af5ddee189a485c847a105a38238f76b69720.webp"
+      }
+    },
+    {
+      "key": "demo-men-02",
+      "name": "Navy Crew-Neck Tee",
+      "slug": "demo-men-navy-crew-neck-tee",
+      "description": "A solid navy short-sleeve tee with a round neckline.",
+      "audience": "men",
+      "clothing_type": "t-shirts",
+      "price_minor": 1890,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-02-S",
+          "size": "S",
+          "color": "Navy",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-MEN-02-M",
+          "size": "M",
+          "color": "Navy",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-MEN-02-L",
+          "size": "L",
+          "color": "Navy",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-02.jpg",
+        "alt_text": "A solid navy short-sleeve tee with a round neckline.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-02/original-ddd2d7faaf21b6e9342be66a0c5f065f0b9b59d2985aa5b70a756c10793acdc6.jpg",
+        "thumbnail_key": "demo-products/demo-men-02/thumbnail-f8a391986b942d8835a0fb4b4a481680eb45f2aa6cb52d644de094530dca0b47.webp"
+      }
+    },
+    {
+      "key": "demo-men-03",
+      "name": "Blue Plaid Button-Up",
+      "slug": "demo-men-blue-plaid-button-up",
+      "description": "Blue and purple checks, long sleeves, and two chest pockets.",
+      "audience": "men",
+      "clothing_type": "shirts",
+      "price_minor": 3590,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-03-S",
+          "size": "S",
+          "color": "Blue Plaid",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-MEN-03-M",
+          "size": "M",
+          "color": "Blue Plaid",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-MEN-03-L",
+          "size": "L",
+          "color": "Blue Plaid",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-03.jpg",
+        "alt_text": "Blue and purple checks, long sleeves, and two chest pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-03/original-012cc14d70898ca2ae3b2a13395809869281382d142e478e5b528366a2506307.jpg",
+        "thumbnail_key": "demo-products/demo-men-03/thumbnail-20a71370dbf78b01ece623001a9e3a1752eabbc7707d527109a4656de9e61407.webp"
+      }
+    },
+    {
+      "key": "demo-men-04",
+      "name": "Sky Blue Short-Sleeve Shirt",
+      "slug": "demo-men-sky-blue-short-sleeve-shirt",
+      "description": "A light blue collared shirt with short sleeves and a button front.",
+      "audience": "men",
+      "clothing_type": "shirts",
+      "price_minor": 3290,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-04-S",
+          "size": "S",
+          "color": "Sky Blue",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-MEN-04-M",
+          "size": "M",
+          "color": "Sky Blue",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-MEN-04-L",
+          "size": "L",
+          "color": "Sky Blue",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-04.jpg",
+        "alt_text": "A light blue collared shirt with short sleeves and a button front.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-04/original-ee43c448c2922141767a8a8065bd225f765d6db4d24648c2a65931c4bc87a77e.jpg",
+        "thumbnail_key": "demo-products/demo-men-04/thumbnail-251f84c193fcf4891fe92505e6e6016ee80a88716604807408d83e2f7ee792aa.webp"
+      }
+    },
+    {
+      "key": "demo-men-05",
+      "name": "Charcoal Short-Sleeve Shirt",
+      "slug": "demo-men-charcoal-short-sleeve-shirt",
+      "description": "A dark collared shirt with a full button front.",
+      "audience": "men",
+      "clothing_type": "shirts",
+      "price_minor": 3250,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-05-M",
+          "size": "M",
+          "color": "Charcoal",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-MEN-05-L",
+          "size": "L",
+          "color": "Charcoal",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-MEN-05-XL",
+          "size": "XL",
+          "color": "Charcoal",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-05.jpg",
+        "alt_text": "A dark collared shirt with a full button front.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-05/original-4b3b437f6c512abccc3c80ea708919993f6b87cdfb4c42b1ca55b653e913d3db.jpg",
+        "thumbnail_key": "demo-products/demo-men-05/thumbnail-618fabe158344b58280d6d432c4480180b71a7d7358fc82c34ebcac85aeaa08c.webp"
+      }
+    },
+    {
+      "key": "demo-men-06",
+      "name": "Slate Blue Utility Shirt",
+      "slug": "demo-men-slate-blue-utility-shirt",
+      "description": "A long-sleeve button-up with flap chest pockets.",
+      "audience": "men",
+      "clothing_type": "shirts",
+      "price_minor": 3950,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-06-M",
+          "size": "M",
+          "color": "Slate Blue",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-MEN-06-L",
+          "size": "L",
+          "color": "Slate Blue",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-MEN-06-XL",
+          "size": "XL",
+          "color": "Slate Blue",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-06.jpg",
+        "alt_text": "A long-sleeve button-up with flap chest pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-06/original-6fc8bd20bda0b149c274391e414aed938572b951f63b0c6d78d129c148c3e0c2.jpg",
+        "thumbnail_key": "demo-products/demo-men-06/thumbnail-982c7e62b3c12e0ecf56cf7e22e3254ab01b435b3169671447f8a40b223e430e.webp"
+      }
+    },
+    {
+      "key": "demo-men-07",
+      "name": "Dark Navy Polo",
+      "slug": "demo-men-dark-navy-polo",
+      "description": "A dark navy short-sleeve polo with a fold-over collar.",
+      "audience": "men",
+      "clothing_type": "polo-shirts",
+      "price_minor": 2590,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-07-S",
+          "size": "S",
+          "color": "Dark Navy",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-MEN-07-M",
+          "size": "M",
+          "color": "Dark Navy",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-MEN-07-L",
+          "size": "L",
+          "color": "Dark Navy",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-07.jpg",
+        "alt_text": "A dark navy short-sleeve polo with a fold-over collar.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-07/original-3998872c1b72e58620193f161085d7e471e717fd07acebb14e34772fcfdbe836.jpg",
+        "thumbnail_key": "demo-products/demo-men-07/thumbnail-91823fdf0f5476ad550308d9cedcddee631accac9da2c140a6afb93345af91bb.webp"
+      }
+    },
+    {
+      "key": "demo-men-08",
+      "name": "Indigo Polo Shirt",
+      "slug": "demo-men-indigo-polo-shirt",
+      "description": "An indigo polo with short sleeves and a short button placket.",
+      "audience": "men",
+      "clothing_type": "polo-shirts",
+      "price_minor": 2750,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-08-M",
+          "size": "M",
+          "color": "Indigo",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-MEN-08-L",
+          "size": "L",
+          "color": "Indigo",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-MEN-08-XL",
+          "size": "XL",
+          "color": "Indigo",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-08.jpg",
+        "alt_text": "An indigo polo with short sleeves and a short button placket.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-08/original-a722db5dd350f9dfd745653ffef89840b1c7817fa751c1290d071b3326aaa5d2.jpg",
+        "thumbnail_key": "demo-products/demo-men-08/thumbnail-a7b1416ae52e2a242dc6269263a571633e8942c4020433bfeacf82ca81570aff.webp"
+      }
+    },
+    {
+      "key": "demo-men-09",
+      "name": "Charcoal Cargo Trousers",
+      "slug": "demo-men-charcoal-cargo-trousers",
+      "description": "Straight-leg charcoal trousers with utility pockets.",
+      "audience": "men",
+      "clothing_type": "trousers",
+      "price_minor": 4590,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-09-30",
+          "size": "30",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-MEN-09-32",
+          "size": "32",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-MEN-09-34",
+          "size": "34",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-09.jpg",
+        "alt_text": "Straight-leg charcoal trousers with utility pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-09/original-3e61a809aae16f282c2893de326a6c3391dc1b5b458dd7e66a087ded092f5619.jpg",
+        "thumbnail_key": "demo-products/demo-men-09/thumbnail-2f1a7522d08f5129e3274a273e89ea2e0a41565af6207937f40a131cf9f2ea62.webp"
+      }
+    },
+    {
+      "key": "demo-men-10",
+      "name": "Mid-Wash Blue Jeans",
+      "slug": "demo-men-mid-wash-blue-jeans",
+      "description": "Straight blue jeans with fading down the front of the legs.",
+      "audience": "men",
+      "clothing_type": "trousers",
+      "price_minor": 4950,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-10-30",
+          "size": "30",
+          "color": "Mid Blue",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-MEN-10-32",
+          "size": "32",
+          "color": "Mid Blue",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-MEN-10-34",
+          "size": "34",
+          "color": "Mid Blue",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-10.jpg",
+        "alt_text": "Straight blue jeans with fading down the front of the legs.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-10/original-40c794d9c50ba5d54a139a7bc788ca2fce035366597c1a3373c420cd1e2aff7c.jpg",
+        "thumbnail_key": "demo-products/demo-men-10/thumbnail-1e051d0330f65ff68c124cf440450d1a49b9cd5972ba7d3bb4e25549ab93d1fa.webp"
+      }
+    },
+    {
+      "key": "demo-men-11",
+      "name": "Khaki Straight-Leg Trousers",
+      "slug": "demo-men-khaki-straight-leg-trousers",
+      "description": "Light khaki trousers with a straight leg.",
+      "audience": "men",
+      "clothing_type": "trousers",
+      "price_minor": 3990,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-11-30",
+          "size": "30",
+          "color": "Khaki",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-MEN-11-32",
+          "size": "32",
+          "color": "Khaki",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-MEN-11-34",
+          "size": "34",
+          "color": "Khaki",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-11.jpg",
+        "alt_text": "Light khaki trousers with a straight leg.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-11/original-88a2c4222df15c1670b61e257d2cd1539d00dc55f741930a152724bc0577ad10.jpg",
+        "thumbnail_key": "demo-products/demo-men-11/thumbnail-13a53c4b341901caa0fbd614548502da57ae94652c1984a7be6d0870f476b213.webp"
+      }
+    },
+    {
+      "key": "demo-men-12",
+      "name": "Dark Indigo Jeans",
+      "slug": "demo-men-dark-indigo-jeans",
+      "description": "Dark blue jeans with a straight cut and minimal fading.",
+      "audience": "men",
+      "clothing_type": "trousers",
+      "price_minor": 5250,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-12-30",
+          "size": "30",
+          "color": "Dark Indigo",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-MEN-12-32",
+          "size": "32",
+          "color": "Dark Indigo",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-MEN-12-34",
+          "size": "34",
+          "color": "Dark Indigo",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-12.jpg",
+        "alt_text": "Dark blue jeans with a straight cut and minimal fading.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-12/original-c170976d5dc44551c409f303d1af623e5019f8ffb7a4af137bcc650c3e13a00f.jpg",
+        "thumbnail_key": "demo-products/demo-men-12/thumbnail-eeb2a35691aaa31e88fd9014a66d14796ded3639955b91b73566d10fcc66e639.webp"
+      }
+    },
+    {
+      "key": "demo-men-13",
+      "name": "Camouflage Cargo Shorts",
+      "slug": "demo-men-camouflage-cargo-shorts",
+      "description": "Olive camouflage shorts with large side pockets.",
+      "audience": "men",
+      "clothing_type": "shorts",
+      "price_minor": 3250,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-13-30",
+          "size": "30",
+          "color": "Olive Camo",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-MEN-13-32",
+          "size": "32",
+          "color": "Olive Camo",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-MEN-13-34",
+          "size": "34",
+          "color": "Olive Camo",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-13.jpg",
+        "alt_text": "Olive camouflage shorts with large side pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-13/original-b94d15d6f90f27ef86cd60bd2b685524b91c7102088ad467749f9dbf359400b8.jpg",
+        "thumbnail_key": "demo-products/demo-men-13/thumbnail-98c152c48281f482e988bb233622264b76a2ed57f1052d436c0ae8f78afad2be.webp"
+      }
+    },
+    {
+      "key": "demo-men-14",
+      "name": "Black Drawstring Shorts",
+      "slug": "demo-men-black-drawstring-shorts",
+      "description": "Black shorts with a gathered waist and drawstring.",
+      "audience": "men",
+      "clothing_type": "shorts",
+      "price_minor": 2390,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-14-S",
+          "size": "S",
+          "color": "Black",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-MEN-14-M",
+          "size": "M",
+          "color": "Black",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-MEN-14-L",
+          "size": "L",
+          "color": "Black",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-14.jpg",
+        "alt_text": "Black shorts with a gathered waist and drawstring.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-14/original-54ba9aa5ded5deef247b316beedfd78338526e28dab77e232c6e0cb1b345bc2a.jpg",
+        "thumbnail_key": "demo-products/demo-men-14/thumbnail-c3e46aac4dc9b559a820a98dc02e369ee743b20c99427ca7673914028fb5fb65.webp"
+      }
+    },
+    {
+      "key": "demo-men-15",
+      "name": "Blue Hooded Shell Jacket",
+      "slug": "demo-men-blue-hooded-shell-jacket",
+      "description": "Blue zip-front outerwear with a hood and front pockets.",
+      "audience": "men",
+      "clothing_type": "outerwear",
+      "price_minor": 5750,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-15-M",
+          "size": "M",
+          "color": "Blue",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-MEN-15-L",
+          "size": "L",
+          "color": "Blue",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-MEN-15-XL",
+          "size": "XL",
+          "color": "Blue",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-15.jpg",
+        "alt_text": "Blue zip-front outerwear with a hood and front pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-15/original-96ce349e9a44f01fabf00e2334dd80e33a76e4964932369988d209de5b97569a.jpg",
+        "thumbnail_key": "demo-products/demo-men-15/thumbnail-2c1e58e0aeb532a67f71e54440504e6571479f74a60df3fcc43e0d903b48a49d.webp"
+      }
+    },
+    {
+      "key": "demo-men-16",
+      "name": "Two-Tone Quilted Vest",
+      "slug": "demo-men-two-tone-quilted-vest",
+      "description": "A quilted navy vest with a contrasting mustard shoulder panel.",
+      "audience": "men",
+      "clothing_type": "outerwear",
+      "price_minor": 4900,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-16-M",
+          "size": "M",
+          "color": "Navy and Mustard",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-MEN-16-L",
+          "size": "L",
+          "color": "Navy and Mustard",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-MEN-16-XL",
+          "size": "XL",
+          "color": "Navy and Mustard",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-16.jpg",
+        "alt_text": "A quilted navy vest with a contrasting mustard shoulder panel.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-16/original-d4dade2c3954c9ac0650d714aaec8e495183b65c4e58253131db9bdc4b52094d.jpg",
+        "thumbnail_key": "demo-products/demo-men-16/thumbnail-2ba434e67cc5e09bb42382e3e89f590941b904508162559393ef8ad2c1b6aeb7.webp"
+      }
+    },
+    {
+      "key": "demo-men-17",
+      "name": "Navy Diamond-Quilted Jacket",
+      "slug": "demo-men-navy-diamond-quilted-jacket",
+      "description": "A navy jacket with a diamond quilting pattern.",
+      "audience": "men",
+      "clothing_type": "outerwear",
+      "price_minor": 6450,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-17-S",
+          "size": "S",
+          "color": "Navy",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-MEN-17-M",
+          "size": "M",
+          "color": "Navy",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-MEN-17-L",
+          "size": "L",
+          "color": "Navy",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-17.jpg",
+        "alt_text": "A navy jacket with a diamond quilting pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-17/original-0394b588e90c3c432af8a83903eae6d45feb2f9c7543c6881ea42515a7457304.jpg",
+        "thumbnail_key": "demo-products/demo-men-17/thumbnail-b2c6e73a15b7fc516cd5bfcd00f49ccd137009b767e291e48a96b6b43e5d7733.webp"
+      }
+    },
+    {
+      "key": "demo-men-18",
+      "name": "Charcoal Notch-Lapel Blazer",
+      "slug": "demo-men-charcoal-notch-lapel-blazer",
+      "description": "A single-breasted charcoal blazer with notched lapels.",
+      "audience": "men",
+      "clothing_type": "outerwear",
+      "price_minor": 7490,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-18-M",
+          "size": "M",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-MEN-18-L",
+          "size": "L",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-MEN-18-XL",
+          "size": "XL",
+          "color": "Charcoal",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-18.jpg",
+        "alt_text": "A single-breasted charcoal blazer with notched lapels.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-18/original-7eb954c1df186368191edc91918f71bc4f44fd00f50582a55b972e023d31ce92.jpg",
+        "thumbnail_key": "demo-products/demo-men-18/thumbnail-67cdf45cea5fd11f00a4fe5d4db1ff434ca97008207ac33c64b24bf85267058d.webp"
+      }
+    },
+    {
+      "key": "demo-men-19",
+      "name": "Geometric Stripe Sweater",
+      "slug": "demo-men-geometric-stripe-sweater",
+      "description": "A dark crew neck with contrasting stripes and a large geometric design.",
+      "audience": "men",
+      "clothing_type": "knitwear",
+      "price_minor": 4290,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-19-S",
+          "size": "S",
+          "color": "Black and Blue",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-MEN-19-M",
+          "size": "M",
+          "color": "Black and Blue",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-MEN-19-L",
+          "size": "L",
+          "color": "Black and Blue",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-19.jpg",
+        "alt_text": "A dark crew neck with contrasting stripes and a large geometric design.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-19/original-53d612b55be564abd44068532cd30442bc3c75bd1de31b6f9c605c1f20609274.jpg",
+        "thumbnail_key": "demo-products/demo-men-19/thumbnail-261d94327b57352c10e5d530c4984f1c3d523cc248a9f83cc132f052ad228b14.webp"
+      }
+    },
+    {
+      "key": "demo-men-20",
+      "name": "Brown V-Neck Pullover",
+      "slug": "demo-men-brown-v-neck-pullover",
+      "description": "A chocolate-brown V-neck pullover with contrasting trim.",
+      "audience": "men",
+      "clothing_type": "knitwear",
+      "price_minor": 3790,
+      "variants": [
+        {
+          "sku": "DEMO-MEN-20-S",
+          "size": "S",
+          "color": "Chocolate Brown",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-MEN-20-M",
+          "size": "M",
+          "color": "Chocolate Brown",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-MEN-20-L",
+          "size": "L",
+          "color": "Chocolate Brown",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-men-20.jpg",
+        "alt_text": "A chocolate-brown V-neck pullover with contrasting trim.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-men-20/original-bb1c6b0ab2555d6756cf60f85c82f52cae5ef4b20c21a33131da0844a286edb0.jpg",
+        "thumbnail_key": "demo-products/demo-men-20/thumbnail-7145d8bb4350242a88d74022dcde48e84837dd5500378075d4755a93e4e4aa58.webp"
+      }
+    },
+    {
+      "key": "demo-women-01",
+      "name": "Rust Abstract-Print Tee",
+      "slug": "demo-women-rust-abstract-print-tee",
+      "description": "A short-sleeve tee with a rust and cream abstract pattern.",
+      "audience": "women",
+      "clothing_type": "t-shirts",
+      "price_minor": 2290,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-01-S",
+          "size": "S",
+          "color": "Rust Print",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-WOMEN-01-M",
+          "size": "M",
+          "color": "Rust Print",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-WOMEN-01-L",
+          "size": "L",
+          "color": "Rust Print",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-01.jpg",
+        "alt_text": "A short-sleeve tee with a rust and cream abstract pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-01/original-49c28800c03f5d763d95a7e997484b03bca2ce349939735c86ec87994084f604.jpg",
+        "thumbnail_key": "demo-products/demo-women-01/thumbnail-ee14a9918da21a2e38379213f5ac1ed28c3aa711818a5d1cf67af2a12cc752e4.webp"
+      }
+    },
+    {
+      "key": "demo-women-02",
+      "name": "Black Multicolor Floral Tee",
+      "slug": "demo-women-black-multicolor-floral-tee",
+      "description": "A black short-sleeve tee with a scattered multicolor print.",
+      "audience": "women",
+      "clothing_type": "t-shirts",
+      "price_minor": 2350,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-02-S",
+          "size": "S",
+          "color": "Black Floral",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-WOMEN-02-M",
+          "size": "M",
+          "color": "Black Floral",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-WOMEN-02-L",
+          "size": "L",
+          "color": "Black Floral",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-02.jpg",
+        "alt_text": "A black short-sleeve tee with a scattered multicolor print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-02/original-1a6f1c37eeccdadf181e760ce0ce82bfd47b2a30abeb620688847820065acf6f.jpg",
+        "thumbnail_key": "demo-products/demo-women-02/thumbnail-5ea562c12e32ea94535c92dad649145009e3a766f7d3fbecd20a0e85c2b6c7a0.webp"
+      }
+    },
+    {
+      "key": "demo-women-03",
+      "name": "Ivory Peplum Shirt",
+      "slug": "demo-women-ivory-peplum-shirt",
+      "description": "An ivory button-front shirt with a gathered waist and flared hem.",
+      "audience": "women",
+      "clothing_type": "shirts",
+      "price_minor": 3590,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-03-S",
+          "size": "S",
+          "color": "Ivory",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-WOMEN-03-M",
+          "size": "M",
+          "color": "Ivory",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-WOMEN-03-L",
+          "size": "L",
+          "color": "Ivory",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-03.jpg",
+        "alt_text": "An ivory button-front shirt with a gathered waist and flared hem.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-03/original-580eff9366cbaf0e8fc6da5c815344cb2998c59955af76a309e76a854b8b005f.jpg",
+        "thumbnail_key": "demo-products/demo-women-03/thumbnail-86ab4dd4e13b105e89d1af5267659a0fc965889b3b5f3399d6e12b4d66be09f9.webp"
+      }
+    },
+    {
+      "key": "demo-women-04",
+      "name": "White Motif-Print Shirt",
+      "slug": "demo-women-white-motif-print-shirt",
+      "description": "A white collared shirt with long sleeves and a scattered small print.",
+      "audience": "women",
+      "clothing_type": "shirts",
+      "price_minor": 3490,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-04-M",
+          "size": "M",
+          "color": "White Print",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-WOMEN-04-L",
+          "size": "L",
+          "color": "White Print",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-WOMEN-04-XL",
+          "size": "XL",
+          "color": "White Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-04.jpg",
+        "alt_text": "A white collared shirt with long sleeves and a scattered small print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-04/original-4953dce066d3e4fdffc559ff06174523b90394f4f3a7daa8335b167c2e75f2e7.jpg",
+        "thumbnail_key": "demo-products/demo-women-04/thumbnail-24735c9461cc2a60ad0dd4ea3dd4cf565014dd50c24d022d9befc01514b7af20.webp"
+      }
+    },
+    {
+      "key": "demo-women-05",
+      "name": "Bright Pink Polo",
+      "slug": "demo-women-bright-pink-polo",
+      "description": "A bright pink polo with short sleeves and a button placket.",
+      "audience": "women",
+      "clothing_type": "polo-shirts",
+      "price_minor": 2450,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-05-S",
+          "size": "S",
+          "color": "Bright Pink",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-WOMEN-05-M",
+          "size": "M",
+          "color": "Bright Pink",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-WOMEN-05-L",
+          "size": "L",
+          "color": "Bright Pink",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-05.jpg",
+        "alt_text": "A bright pink polo with short sleeves and a button placket.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-05/original-c6f03bda4f631c5b567178d56e2671c5c55f3b0bbe361d6206ab84ea14c8242d.jpg",
+        "thumbnail_key": "demo-products/demo-women-05/thumbnail-c356de720a603e19d8d1979fc363ca59fd8637d7606590a83867fecf913655af.webp"
+      }
+    },
+    {
+      "key": "demo-women-06",
+      "name": "Monochrome Patterned Trousers",
+      "slug": "demo-women-monochrome-patterned-trousers",
+      "description": "Tapered trousers with alternating black and cream patterned bands.",
+      "audience": "women",
+      "clothing_type": "trousers",
+      "price_minor": 4190,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-06-4",
+          "size": "4",
+          "color": "Black and Cream",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-WOMEN-06-6",
+          "size": "6",
+          "color": "Black and Cream",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-WOMEN-06-8",
+          "size": "8",
+          "color": "Black and Cream",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-06.jpg",
+        "alt_text": "Tapered trousers with alternating black and cream patterned bands.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-06/original-ddeefe42fcb5e64abf00d9d04a9716b544d93be7d843dae1537e604f6d91d316.jpg",
+        "thumbnail_key": "demo-products/demo-women-06/thumbnail-fcf926fc1d1020ae6887d3e984b2af5a46c0a569b3698e6598ba747008e56d4e.webp"
+      }
+    },
+    {
+      "key": "demo-women-07",
+      "name": "Lime Straight-Leg Trousers",
+      "slug": "demo-women-lime-straight-leg-trousers",
+      "description": "Straight-leg trousers in a bright yellow-green shade.",
+      "audience": "women",
+      "clothing_type": "trousers",
+      "price_minor": 4250,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-07-4",
+          "size": "4",
+          "color": "Lime",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-WOMEN-07-6",
+          "size": "6",
+          "color": "Lime",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-WOMEN-07-8",
+          "size": "8",
+          "color": "Lime",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-07.jpg",
+        "alt_text": "Straight-leg trousers in a bright yellow-green shade.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-07/original-7b6dee48a785039ba26ede0a71e97127f886f2dc540c4476d4cce9c0d0909dbd.jpg",
+        "thumbnail_key": "demo-products/demo-women-07/thumbnail-4f4b0a434144212d1500ea640481e4e9347fa48e758be278ceee9f8499101963.webp"
+      }
+    },
+    {
+      "key": "demo-women-08",
+      "name": "Taupe Cuffed Shorts",
+      "slug": "demo-women-taupe-cuffed-shorts",
+      "description": "Taupe shorts with turned-up hems and front pockets.",
+      "audience": "women",
+      "clothing_type": "shorts",
+      "price_minor": 2990,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-08-4",
+          "size": "4",
+          "color": "Taupe",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-WOMEN-08-6",
+          "size": "6",
+          "color": "Taupe",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-WOMEN-08-8",
+          "size": "8",
+          "color": "Taupe",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-08.jpg",
+        "alt_text": "Taupe shorts with turned-up hems and front pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-08/original-1a643a62beab5264d5da0bfa6629f5cdfb3564818f684681733a412a20bb0948.jpg",
+        "thumbnail_key": "demo-products/demo-women-08/thumbnail-0aed670daaca2aae3e9f8925a615a898f0bb7d9bbffe0bc099cee2e823f7a220.webp"
+      }
+    },
+    {
+      "key": "demo-women-09",
+      "name": "Red Hooded Puffer Vest",
+      "slug": "demo-women-red-hooded-puffer-vest",
+      "description": "A bright red quilted vest with a zip front and hood.",
+      "audience": "women",
+      "clothing_type": "outerwear",
+      "price_minor": 4990,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-09-M",
+          "size": "M",
+          "color": "Red",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-WOMEN-09-L",
+          "size": "L",
+          "color": "Red",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-WOMEN-09-XL",
+          "size": "XL",
+          "color": "Red",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-09.jpg",
+        "alt_text": "A bright red quilted vest with a zip front and hood.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-09/original-0fee2eecca5901eec23a8214f02e1574d8f52d16f7c759ae7d8d77f83a8742e8.jpg",
+        "thumbnail_key": "demo-products/demo-women-09/thumbnail-2d1ab261a4a6ee2cebd6bb55007f2fbd38bf07f665dafe65cf7ab53b5c8ed076.webp"
+      }
+    },
+    {
+      "key": "demo-women-10",
+      "name": "Blush Pullover Hoodie",
+      "slug": "demo-women-blush-pullover-hoodie",
+      "description": "A pale pink pullover with a drawstring hood and front pocket.",
+      "audience": "women",
+      "clothing_type": "hoodies",
+      "price_minor": 3850,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-10-S",
+          "size": "S",
+          "color": "Blush Pink",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-WOMEN-10-M",
+          "size": "M",
+          "color": "Blush Pink",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-WOMEN-10-L",
+          "size": "L",
+          "color": "Blush Pink",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-10.jpg",
+        "alt_text": "A pale pink pullover with a drawstring hood and front pocket.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-10/original-a5ecc0bc62c59883345977252c3440e4bbe2a08f9380c71bef4887f395296236.jpg",
+        "thumbnail_key": "demo-products/demo-women-10/thumbnail-a82a5b611107c4879373c7899cff0909a3ff42b605a3dada4515105afd6751b4.webp"
+      }
+    },
+    {
+      "key": "demo-women-11",
+      "name": "Blue Denim Motif Jacket",
+      "slug": "demo-women-blue-denim-motif-jacket",
+      "description": "A washed blue denim jacket with small colorful motifs and chest pockets.",
+      "audience": "women",
+      "clothing_type": "outerwear",
+      "price_minor": 5990,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-11-S",
+          "size": "S",
+          "color": "Washed Blue",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-WOMEN-11-M",
+          "size": "M",
+          "color": "Washed Blue",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-WOMEN-11-L",
+          "size": "L",
+          "color": "Washed Blue",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-11.jpg",
+        "alt_text": "A washed blue denim jacket with small colorful motifs and chest pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-11/original-8030271749b42ab9b2c74b1093f2db5443405f52e6ae509b608783eb05766c86.jpg",
+        "thumbnail_key": "demo-products/demo-women-11/thumbnail-ec03d4dad5e1aa51273f31117541526ee667acc1f7b5b1e9cfd22003ec2b454a.webp"
+      }
+    },
+    {
+      "key": "demo-women-12",
+      "name": "Mustard Strap Dress",
+      "slug": "demo-women-mustard-strap-dress",
+      "description": "A mustard dress with narrow shoulder straps and a straight hem.",
+      "audience": "women",
+      "clothing_type": "dresses",
+      "price_minor": 4400,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-12-4",
+          "size": "4",
+          "color": "Mustard",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-WOMEN-12-6",
+          "size": "6",
+          "color": "Mustard",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-WOMEN-12-8",
+          "size": "8",
+          "color": "Mustard",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-12.jpg",
+        "alt_text": "A mustard dress with narrow shoulder straps and a straight hem.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-12/original-237f5419e9308a0b1830eaea7642b462782e8982b6c008c27229abc1dcf39717.jpg",
+        "thumbnail_key": "demo-products/demo-women-12/thumbnail-d36c443b906e89097f4aae4eaff06904b675b9dc7879ad93d43be56fe754c48c.webp"
+      }
+    },
+    {
+      "key": "demo-women-13",
+      "name": "Cobalt Sleeveless Dress",
+      "slug": "demo-women-cobalt-sleeveless-dress",
+      "description": "A sleeveless fitted dress in a bright cobalt shade.",
+      "audience": "women",
+      "clothing_type": "dresses",
+      "price_minor": 5590,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-13-4",
+          "size": "4",
+          "color": "Cobalt Blue",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-WOMEN-13-6",
+          "size": "6",
+          "color": "Cobalt Blue",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-WOMEN-13-8",
+          "size": "8",
+          "color": "Cobalt Blue",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-13.jpg",
+        "alt_text": "A sleeveless fitted dress in a bright cobalt shade.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-13/original-f0081bbf5c4f1d5e28eb98bfbfc8385165b21ed8133e875e831a6ea05a8515fe.jpg",
+        "thumbnail_key": "demo-products/demo-women-13/thumbnail-771c818c4a30ce611e173d701db8c16a005e73d9b5194b0b558bc7c93f62c202.webp"
+      }
+    },
+    {
+      "key": "demo-women-14",
+      "name": "Navy Stripe Dress",
+      "slug": "demo-women-navy-stripe-dress",
+      "description": "A short-sleeve dress with a navy bodice and horizontal stripes.",
+      "audience": "women",
+      "clothing_type": "dresses",
+      "price_minor": 3890,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-14-S",
+          "size": "S",
+          "color": "Navy and Cream",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-WOMEN-14-M",
+          "size": "M",
+          "color": "Navy and Cream",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-WOMEN-14-L",
+          "size": "L",
+          "color": "Navy and Cream",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-14.jpg",
+        "alt_text": "A short-sleeve dress with a navy bodice and horizontal stripes.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-14/original-261e5281b2f7c5ee559ccef621456b6ca8785010753c0e606e5f6b0d24e3a139.jpg",
+        "thumbnail_key": "demo-products/demo-women-14/thumbnail-ad5904754aa3cafa9241876f4ceeaa9ed4650745be7b4fa432baab1ab2a6c978.webp"
+      }
+    },
+    {
+      "key": "demo-women-15",
+      "name": "Black Polka-Dot Dress",
+      "slug": "demo-women-black-polka-dot-dress",
+      "description": "A dark dress with short sleeves and an all-over white dot pattern.",
+      "audience": "women",
+      "clothing_type": "dresses",
+      "price_minor": 4690,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-15-4",
+          "size": "4",
+          "color": "Black and White",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-WOMEN-15-6",
+          "size": "6",
+          "color": "Black and White",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-WOMEN-15-8",
+          "size": "8",
+          "color": "Black and White",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-15.jpg",
+        "alt_text": "A dark dress with short sleeves and an all-over white dot pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-15/original-bb2a4c58b334e446c66b6ccbe6836b182b4aee003a75bcbb1a600637bc342e1a.jpg",
+        "thumbnail_key": "demo-products/demo-women-15/thumbnail-71a139f224423ad08f0e3938bed5c0870d3b70b82750fa9222c93fadf930bda3.webp"
+      }
+    },
+    {
+      "key": "demo-women-16",
+      "name": "Lavender Gathered Dress",
+      "slug": "demo-women-lavender-gathered-dress",
+      "description": "A sleeveless lavender dress with a gathered waist and flared skirt.",
+      "audience": "women",
+      "clothing_type": "dresses",
+      "price_minor": 4890,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-16-4",
+          "size": "4",
+          "color": "Lavender",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-WOMEN-16-6",
+          "size": "6",
+          "color": "Lavender",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-WOMEN-16-8",
+          "size": "8",
+          "color": "Lavender",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-16.jpg",
+        "alt_text": "A sleeveless lavender dress with a gathered waist and flared skirt.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-16/original-eb0341e26b1e0ad88e3374dc0ecdafe965d32df0ed4c6c3e5169802e579d5fac.jpg",
+        "thumbnail_key": "demo-products/demo-women-16/thumbnail-8ae873699b6b7682c0a9ba4248bbed0331d573810b4740bde8c94690290d004d.webp"
+      }
+    },
+    {
+      "key": "demo-women-17",
+      "name": "Lilac Pocket Skirt",
+      "slug": "demo-women-lilac-pocket-skirt",
+      "description": "A straight lilac skirt with front pockets.",
+      "audience": "women",
+      "clothing_type": "skirts",
+      "price_minor": 3290,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-17-4",
+          "size": "4",
+          "color": "Lilac",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-WOMEN-17-6",
+          "size": "6",
+          "color": "Lilac",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-WOMEN-17-8",
+          "size": "8",
+          "color": "Lilac",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-17.jpg",
+        "alt_text": "A straight lilac skirt with front pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-17/original-324ea99b8a565bb347896466cdc5e6d7a5da20508976945bcb37efeebe65a98f.jpg",
+        "thumbnail_key": "demo-products/demo-women-17/thumbnail-bf773a12802a3e58d6cf5fb2f7a6c9d534f5cb255fa503409f036520fbfdf463.webp"
+      }
+    },
+    {
+      "key": "demo-women-18",
+      "name": "Teal Floral Flared Skirt",
+      "slug": "demo-women-teal-floral-flared-skirt",
+      "description": "A flared teal skirt with an orange and cream floral print.",
+      "audience": "women",
+      "clothing_type": "skirts",
+      "price_minor": 3490,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-18-4",
+          "size": "4",
+          "color": "Teal Floral",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-WOMEN-18-6",
+          "size": "6",
+          "color": "Teal Floral",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-WOMEN-18-8",
+          "size": "8",
+          "color": "Teal Floral",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-18.jpg",
+        "alt_text": "A flared teal skirt with an orange and cream floral print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-18/original-78cdc8cc10364563a4acaf4df8e4beb380ef6eefc730d566bea86a4313209cd6.jpg",
+        "thumbnail_key": "demo-products/demo-women-18/thumbnail-85a6e0fff7467cd8c7de6c2353b96f808233c79405d3a756a3e452ec5841dc84.webp"
+      }
+    },
+    {
+      "key": "demo-women-19",
+      "name": "Blue Patterned Blouse",
+      "slug": "demo-women-blue-patterned-blouse",
+      "description": "A short-sleeve blouse in a blue and white pattern.",
+      "audience": "women",
+      "clothing_type": "tops",
+      "price_minor": 2890,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-19-S",
+          "size": "S",
+          "color": "Blue Print",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-WOMEN-19-M",
+          "size": "M",
+          "color": "Blue Print",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-WOMEN-19-L",
+          "size": "L",
+          "color": "Blue Print",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-19.jpg",
+        "alt_text": "A short-sleeve blouse in a blue and white pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-19/original-71b1387bb9d57dcee8f1e1ec9101cb5396746e67c5382dd292ceab6a753b4d52.jpg",
+        "thumbnail_key": "demo-products/demo-women-19/thumbnail-e115484b3de21c09439177e80d40a65750a11c5cd9c32d5593329ae01666f630.webp"
+      }
+    },
+    {
+      "key": "demo-women-20",
+      "name": "Mint Patterned Camisole",
+      "slug": "demo-women-mint-patterned-camisole",
+      "description": "A mint camisole with slim straps and an all-over small pattern.",
+      "audience": "women",
+      "clothing_type": "tops",
+      "price_minor": 2250,
+      "variants": [
+        {
+          "sku": "DEMO-WOMEN-20-S",
+          "size": "S",
+          "color": "Mint",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-WOMEN-20-M",
+          "size": "M",
+          "color": "Mint",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-WOMEN-20-L",
+          "size": "L",
+          "color": "Mint",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-women-20.jpg",
+        "alt_text": "A mint camisole with slim straps and an all-over small pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-women-20/original-706c04ab7ad7c8036d046f1d4b492ce06d8f1dce9c759fd96ddbf90ad50158e3.jpg",
+        "thumbnail_key": "demo-products/demo-women-20/thumbnail-aeea9afbdf52f51c1658daf37cc233652172ac113347589535baa028c2751226.webp"
+      }
+    },
+    {
+      "key": "demo-kids-01",
+      "name": "Cream Long-Sleeve Bodysuit",
+      "slug": "demo-kids-cream-long-sleeve-bodysuit",
+      "description": "A cream infant bodysuit with long sleeves.",
+      "audience": "kids",
+      "clothing_type": "bodysuits",
+      "price_minor": 1250,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-01-3-6M",
+          "size": "3-6M",
+          "color": "Cream",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-KIDS-01-6-9M",
+          "size": "6-9M",
+          "color": "Cream",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-KIDS-01-9-12M",
+          "size": "9-12M",
+          "color": "Cream",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-01.jpg",
+        "alt_text": "A cream infant bodysuit with long sleeves.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-01/original-857a3ca6d936378b894059ec5aa9dd0dad6619d5c4a4366e3294adb7d2712937.jpg",
+        "thumbnail_key": "demo-products/demo-kids-01/thumbnail-790c0809541ea463475b2e2500be58d9c5cc9346ccc6a6706c81e0f54bf021ea.webp"
+      }
+    },
+    {
+      "key": "demo-kids-02",
+      "name": "Coral Long-Sleeve Bodysuit",
+      "slug": "demo-kids-coral-long-sleeve-bodysuit",
+      "description": "A solid coral infant bodysuit with long sleeves.",
+      "audience": "kids",
+      "clothing_type": "bodysuits",
+      "price_minor": 1250,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-02-3-6M",
+          "size": "3-6M",
+          "color": "Coral",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-KIDS-02-6-9M",
+          "size": "6-9M",
+          "color": "Coral",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-KIDS-02-9-12M",
+          "size": "9-12M",
+          "color": "Coral",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-02.jpg",
+        "alt_text": "A solid coral infant bodysuit with long sleeves.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-02/original-6da1dfe486cf524c680abdd5ed0b1d611b32a23328916bd16e4899b7fc509606.jpg",
+        "thumbnail_key": "demo-products/demo-kids-02/thumbnail-7fa965089d9b06e015ca635603814fb4d48b716e1c26dc8d1080a788df12748d.webp"
+      }
+    },
+    {
+      "key": "demo-kids-03",
+      "name": "Pastel Stripe Bodysuit",
+      "slug": "demo-kids-pastel-stripe-bodysuit",
+      "description": "A long-sleeve infant bodysuit with pastel horizontal stripes.",
+      "audience": "kids",
+      "clothing_type": "bodysuits",
+      "price_minor": 1390,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-03-3-6M",
+          "size": "3-6M",
+          "color": "Pastel Stripe",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-KIDS-03-6-9M",
+          "size": "6-9M",
+          "color": "Pastel Stripe",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-KIDS-03-9-12M",
+          "size": "9-12M",
+          "color": "Pastel Stripe",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-03.jpg",
+        "alt_text": "A long-sleeve infant bodysuit with pastel horizontal stripes.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-03/original-e7e65aee9de61af68c7952785dcfba8773b642349f3058601019078ed349ab88.jpg",
+        "thumbnail_key": "demo-products/demo-kids-03/thumbnail-08e69222bd19227bd466a7794c6b11608e663e7029347f44545732bc3b2a6a31.webp"
+      }
+    },
+    {
+      "key": "demo-kids-04",
+      "name": "Pink Printed Footed Sleepsuit",
+      "slug": "demo-kids-pink-printed-footed-sleepsuit",
+      "description": "A pink one-piece sleepsuit with covered feet and a repeating white print.",
+      "audience": "kids",
+      "clothing_type": "sleepwear",
+      "price_minor": 1890,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-04-3-6M",
+          "size": "3-6M",
+          "color": "Pink Print",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-KIDS-04-6-9M",
+          "size": "6-9M",
+          "color": "Pink Print",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-KIDS-04-9-12M",
+          "size": "9-12M",
+          "color": "Pink Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-04.jpg",
+        "alt_text": "A pink one-piece sleepsuit with covered feet and a repeating white print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-04/original-789aabf3726e00db3de94b0ab567aab805ecc5df54f5ccb63a2c70587e0f5182.jpg",
+        "thumbnail_key": "demo-products/demo-kids-04/thumbnail-b05f18a1fb07a0cb8964b27e6598a14c9110bfe05aef7770fba060a94f5c082b.webp"
+      }
+    },
+    {
+      "key": "demo-kids-05",
+      "name": "Blue Floral Party Dress",
+      "slug": "demo-kids-blue-floral-party-dress",
+      "description": "A flared dress with a blue floral pattern on a light background.",
+      "audience": "kids",
+      "clothing_type": "dresses",
+      "price_minor": 2790,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-05-2Y",
+          "size": "2Y",
+          "color": "Blue Floral",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-KIDS-05-3Y",
+          "size": "3Y",
+          "color": "Blue Floral",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-KIDS-05-4Y",
+          "size": "4Y",
+          "color": "Blue Floral",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-05.jpg",
+        "alt_text": "A flared dress with a blue floral pattern on a light background.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-05/original-e8745fe9ef00873832b0a244d73f79c311ae4408df504a3c90dd4a8b413faa36.jpg",
+        "thumbnail_key": "demo-products/demo-kids-05/thumbnail-51e0bcf5e11dcbbdeaadf42ae102f2efb5d5077d4dc616f579a7d9196f8a6396.webp"
+      }
+    },
+    {
+      "key": "demo-kids-06",
+      "name": "Rainbow Tulle Dress",
+      "slug": "demo-kids-rainbow-tulle-dress",
+      "description": "A light bodice paired with a multicolor striped tulle skirt.",
+      "audience": "kids",
+      "clothing_type": "dresses",
+      "price_minor": 3450,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-06-2Y",
+          "size": "2Y",
+          "color": "Rainbow",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-KIDS-06-3Y",
+          "size": "3Y",
+          "color": "Rainbow",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-KIDS-06-4Y",
+          "size": "4Y",
+          "color": "Rainbow",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-06.jpg",
+        "alt_text": "A light bodice paired with a multicolor striped tulle skirt.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-06/original-b0af001631cfbe2a279b4fd704c5c6e6e985329f115d79a8de438cc7a8573ca6.jpg",
+        "thumbnail_key": "demo-products/demo-kids-06/thumbnail-b066b9f28f44d49c32cb7d138c169fc19cdbccbd41dda8b57a9537e0a8754cec.webp"
+      }
+    },
+    {
+      "key": "demo-kids-07",
+      "name": "Cream Butterfly Dress",
+      "slug": "demo-kids-cream-butterfly-dress",
+      "description": "A cream flared dress with a dark butterfly print.",
+      "audience": "kids",
+      "clothing_type": "dresses",
+      "price_minor": 2590,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-07-2Y",
+          "size": "2Y",
+          "color": "Cream Print",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-KIDS-07-3Y",
+          "size": "3Y",
+          "color": "Cream Print",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-KIDS-07-4Y",
+          "size": "4Y",
+          "color": "Cream Print",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-07.jpg",
+        "alt_text": "A cream flared dress with a dark butterfly print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-07/original-52c8ddc18c9d8d1b6e516c0b17f6215e0d6103b4d4791c693f1a24f5f36484b4.jpg",
+        "thumbnail_key": "demo-products/demo-kids-07/thumbnail-24f05a157a5dc68d6af2a409969c0e794e75e08d220b1c086cbd3ecba969994f.webp"
+      }
+    },
+    {
+      "key": "demo-kids-08",
+      "name": "Peach Animal-Print Tee",
+      "slug": "demo-kids-peach-animal-print-tee",
+      "description": "A peach short-sleeve tee with a multicolor animal print.",
+      "audience": "kids",
+      "clothing_type": "t-shirts",
+      "price_minor": 1390,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-08-2Y",
+          "size": "2Y",
+          "color": "Peach Print",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-KIDS-08-3Y",
+          "size": "3Y",
+          "color": "Peach Print",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-KIDS-08-4Y",
+          "size": "4Y",
+          "color": "Peach Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-08.jpg",
+        "alt_text": "A peach short-sleeve tee with a multicolor animal print.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-08/original-a8b04dc9b95a9250b138286e36305fd0eafcbc34a86d71daafbc1d891c61d48a.jpg",
+        "thumbnail_key": "demo-products/demo-kids-08/thumbnail-e26007f36200af69de0309d43ec35abbc8e03f67f64d899a954a45aedb9982c4.webp"
+      }
+    },
+    {
+      "key": "demo-kids-09",
+      "name": "Yellow Star-Print Tee",
+      "slug": "demo-kids-yellow-star-print-tee",
+      "description": "A yellow tee with stars in red, brown, cream, and gold.",
+      "audience": "kids",
+      "clothing_type": "t-shirts",
+      "price_minor": 1350,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-09-4Y",
+          "size": "4Y",
+          "color": "Yellow Print",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-KIDS-09-6Y",
+          "size": "6Y",
+          "color": "Yellow Print",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-KIDS-09-8Y",
+          "size": "8Y",
+          "color": "Yellow Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-09.jpg",
+        "alt_text": "A yellow tee with stars in red, brown, cream, and gold.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-09/original-17dfd95b69957abe6d56d52311ad712507ea88d0e07a70e1a6651cd4245a459f.jpg",
+        "thumbnail_key": "demo-products/demo-kids-09/thumbnail-0c6065539b624b2b5293c0a42c46a8f872f7fd1a949b9e5789531b7e16bed35a.webp"
+      }
+    },
+    {
+      "key": "demo-kids-10",
+      "name": "Light Blue Pull-On Joggers",
+      "slug": "demo-kids-light-blue-pull-on-joggers",
+      "description": "Light blue pull-on trousers with gathered cuffs.",
+      "audience": "kids",
+      "clothing_type": "trousers",
+      "price_minor": 1750,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-10-2Y",
+          "size": "2Y",
+          "color": "Light Blue",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-KIDS-10-3Y",
+          "size": "3Y",
+          "color": "Light Blue",
+          "stock_quantity": 12
+        },
+        {
+          "sku": "DEMO-KIDS-10-4Y",
+          "size": "4Y",
+          "color": "Light Blue",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-10.jpg",
+        "alt_text": "Light blue pull-on trousers with gathered cuffs.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-10/original-d0687a072d97b68c77a5fc3de252e780e91883983a95abca989b7b9075d14360.jpg",
+        "thumbnail_key": "demo-products/demo-kids-10/thumbnail-79583051c9dc1d02eb9e9b9ed1118acdbc345ef964467a959c1cdb6aca65df68.webp"
+      }
+    },
+    {
+      "key": "demo-kids-11",
+      "name": "Multicolor Stripe Pull-On Pants",
+      "slug": "demo-kids-multicolor-stripe-pull-on-pants",
+      "description": "Pull-on pants with bold horizontal stripes and a contrasting waist.",
+      "audience": "kids",
+      "clothing_type": "trousers",
+      "price_minor": 1850,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-11-2Y",
+          "size": "2Y",
+          "color": "Multicolor Stripe",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-KIDS-11-3Y",
+          "size": "3Y",
+          "color": "Multicolor Stripe",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-KIDS-11-4Y",
+          "size": "4Y",
+          "color": "Multicolor Stripe",
+          "stock_quantity": 2
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-11.jpg",
+        "alt_text": "Pull-on pants with bold horizontal stripes and a contrasting waist.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-11/original-3ab7bba8cdf86a087d1ec7597f1d2e7f57aefb4afe790dc88ae2ef912c5dbe18.jpg",
+        "thumbnail_key": "demo-products/demo-kids-11/thumbnail-56b6d51fd8eb34b24f7f0c1841e75ada5bd9dafa20b8196c7bfb167f7460dae2.webp"
+      }
+    },
+    {
+      "key": "demo-kids-12",
+      "name": "Coral Dotted Leggings",
+      "slug": "demo-kids-coral-dotted-leggings",
+      "description": "Coral leggings with a small dotted pattern.",
+      "audience": "kids",
+      "clothing_type": "trousers",
+      "price_minor": 1490,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-12-2Y",
+          "size": "2Y",
+          "color": "Coral Print",
+          "stock_quantity": 3
+        },
+        {
+          "sku": "DEMO-KIDS-12-3Y",
+          "size": "3Y",
+          "color": "Coral Print",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-KIDS-12-4Y",
+          "size": "4Y",
+          "color": "Coral Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-12.jpg",
+        "alt_text": "Coral leggings with a small dotted pattern.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-12/original-2b83f73733203b6049c0428890ca9d58ca5a182e0d89ba8dcc04b84efae627b0.jpg",
+        "thumbnail_key": "demo-products/demo-kids-12/thumbnail-2a8059eea983bf29f2e58e9883b44d498a78b6959c5f6ec83889b3fa23a042b8.webp"
+      }
+    },
+    {
+      "key": "demo-kids-13",
+      "name": "Blue Pull-On Play Shorts",
+      "slug": "demo-kids-blue-pull-on-play-shorts",
+      "description": "Bright blue shorts with an elastic waist and front pockets.",
+      "audience": "kids",
+      "clothing_type": "shorts",
+      "price_minor": 1450,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-13-4Y",
+          "size": "4Y",
+          "color": "Blue",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-KIDS-13-6Y",
+          "size": "6Y",
+          "color": "Blue",
+          "stock_quantity": 15
+        },
+        {
+          "sku": "DEMO-KIDS-13-8Y",
+          "size": "8Y",
+          "color": "Blue",
+          "stock_quantity": 4
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-13.jpg",
+        "alt_text": "Bright blue shorts with an elastic waist and front pockets.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-13/original-69fa4a823f0d5f1d1eb375ef9bb974f3e00d6c74088d454bdf11d92ec477fb25.jpg",
+        "thumbnail_key": "demo-products/demo-kids-13/thumbnail-879858e8afb15bc7243641acbe570979407e7c8f73f9afb968bc6445940b4387.webp"
+      }
+    },
+    {
+      "key": "demo-kids-14",
+      "name": "Black and White Stripe Shorts",
+      "slug": "demo-kids-black-and-white-stripe-shorts",
+      "description": "Drawstring shorts with narrow black and white stripes.",
+      "audience": "kids",
+      "clothing_type": "shorts",
+      "price_minor": 1490,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-14-4Y",
+          "size": "4Y",
+          "color": "Black and White",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-KIDS-14-6Y",
+          "size": "6Y",
+          "color": "Black and White",
+          "stock_quantity": 16
+        },
+        {
+          "sku": "DEMO-KIDS-14-8Y",
+          "size": "8Y",
+          "color": "Black and White",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-14.jpg",
+        "alt_text": "Drawstring shorts with narrow black and white stripes.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-14/original-4ac04fa900774ffcca409adfdef38104f115a6c398a6bc93c94ee95143db8660.jpg",
+        "thumbnail_key": "demo-products/demo-kids-14/thumbnail-f78b9bc244f7ce5f11c1507e13eed7f22194bfc2bb95771b8bc4079662989912.webp"
+      }
+    },
+    {
+      "key": "demo-kids-15",
+      "name": "Olive and White Raglan Top",
+      "slug": "demo-kids-olive-and-white-raglan-top",
+      "description": "An olive body with white raglan sleeves and contrasting cuffs.",
+      "audience": "kids",
+      "clothing_type": "tops",
+      "price_minor": 1790,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-15-4Y",
+          "size": "4Y",
+          "color": "Olive and White",
+          "stock_quantity": 6
+        },
+        {
+          "sku": "DEMO-KIDS-15-6Y",
+          "size": "6Y",
+          "color": "Olive and White",
+          "stock_quantity": 17
+        },
+        {
+          "sku": "DEMO-KIDS-15-8Y",
+          "size": "8Y",
+          "color": "Olive and White",
+          "stock_quantity": 1
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-15.jpg",
+        "alt_text": "An olive body with white raglan sleeves and contrasting cuffs.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-15/original-fdffb10caaf8a8bb8f21d3aff134387e655f45d74fb16d06675776f0e719aa8d.jpg",
+        "thumbnail_key": "demo-products/demo-kids-15/thumbnail-b57f87f3cd2b8e8cadbeac1514ed6b66550332afb85b3a25df3e95a1929fe27a.webp"
+      }
+    },
+    {
+      "key": "demo-kids-16",
+      "name": "Peach Stripe Cardigan",
+      "slug": "demo-kids-peach-stripe-cardigan",
+      "description": "A button-front cardigan with peach, cream, and pink stripes.",
+      "audience": "kids",
+      "clothing_type": "knitwear",
+      "price_minor": 2450,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-16-2Y",
+          "size": "2Y",
+          "color": "Peach Stripe",
+          "stock_quantity": 7
+        },
+        {
+          "sku": "DEMO-KIDS-16-3Y",
+          "size": "3Y",
+          "color": "Peach Stripe",
+          "stock_quantity": 10
+        },
+        {
+          "sku": "DEMO-KIDS-16-4Y",
+          "size": "4Y",
+          "color": "Peach Stripe",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-16.jpg",
+        "alt_text": "A button-front cardigan with peach, cream, and pink stripes.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-16/original-1d7f10c1aa235db94fda94a2ffa8ed74bfe6942f35f6d645fe9507db9a3c0760.jpg",
+        "thumbnail_key": "demo-products/demo-kids-16/thumbnail-5063f4ab564b90a4935edf2b5a0d546570fb53fad69ee4dfce07bae900d1a3cb.webp"
+      }
+    },
+    {
+      "key": "demo-kids-17",
+      "name": "Red Long-Sleeve Pocket Tee",
+      "slug": "demo-kids-red-long-sleeve-pocket-tee",
+      "description": "A red long-sleeve tee with a navy neckline and chest pocket.",
+      "audience": "kids",
+      "clothing_type": "t-shirts",
+      "price_minor": 1650,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-17-4Y",
+          "size": "4Y",
+          "color": "Red and Navy",
+          "stock_quantity": 8
+        },
+        {
+          "sku": "DEMO-KIDS-17-6Y",
+          "size": "6Y",
+          "color": "Red and Navy",
+          "stock_quantity": 11
+        },
+        {
+          "sku": "DEMO-KIDS-17-8Y",
+          "size": "8Y",
+          "color": "Red and Navy",
+          "stock_quantity": 3
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-17.jpg",
+        "alt_text": "A red long-sleeve tee with a navy neckline and chest pocket.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-17/original-88da00d3d8095237732cdf0b7f45fb5ee89ccfef9a52a35dc728f103960111f2.jpg",
+        "thumbnail_key": "demo-products/demo-kids-17/thumbnail-376a7f92f6961c3eebab183f4fbba3f5cc4c8de97d07f4be4ac95fb8ad4841ee.webp"
+      }
+    },
+    {
+      "key": "demo-kids-18",
+      "name": "Orange and Blue Colorblock Jacket",
+      "slug": "demo-kids-orange-and-blue-colorblock-jacket",
+      "description": "A zip-front jacket with orange, dark gray, and bright blue panels.",
+      "audience": "kids",
+      "clothing_type": "outerwear",
+      "price_minor": 3950,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-18-4Y",
+          "size": "4Y",
+          "color": "Orange and Blue",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-KIDS-18-6Y",
+          "size": "6Y",
+          "color": "Orange and Blue",
+          "stock_quantity": 0
+        },
+        {
+          "sku": "DEMO-KIDS-18-8Y",
+          "size": "8Y",
+          "color": "Orange and Blue",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-18.jpg",
+        "alt_text": "A zip-front jacket with orange, dark gray, and bright blue panels.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-18/original-23b68c380f7d715089d9b6d8bf111263e3f55dbc5e0c7fa3ddbb66396f8d91e0.jpg",
+        "thumbnail_key": "demo-products/demo-kids-18/thumbnail-b7fbad13542cf0be37ed21f3158ba13732d6e8b7bf63ff2feeffb07db4b19abd.webp"
+      }
+    },
+    {
+      "key": "demo-kids-19",
+      "name": "Berry Hooded Quilted Vest",
+      "slug": "demo-kids-berry-hooded-quilted-vest",
+      "description": "A hooded quilted vest in a deep pink shade.",
+      "audience": "kids",
+      "clothing_type": "outerwear",
+      "price_minor": 3290,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-19-4Y",
+          "size": "4Y",
+          "color": "Berry",
+          "stock_quantity": 4
+        },
+        {
+          "sku": "DEMO-KIDS-19-6Y",
+          "size": "6Y",
+          "color": "Berry",
+          "stock_quantity": 13
+        },
+        {
+          "sku": "DEMO-KIDS-19-8Y",
+          "size": "8Y",
+          "color": "Berry",
+          "stock_quantity": 5
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-19.jpg",
+        "alt_text": "A hooded quilted vest in a deep pink shade.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-19/original-0113f9ecbeb6625a6618f16cbdbdaf7761808febfbd6abf213964b4614d2858a.jpg",
+        "thumbnail_key": "demo-products/demo-kids-19/thumbnail-83946f8067cac86332c7615fe3898c953950f2e01bc9bbedf0141607c730f388.webp"
+      }
+    },
+    {
+      "key": "demo-kids-20",
+      "name": "Cream Printed Pullover Hoodie",
+      "slug": "demo-kids-cream-printed-pullover-hoodie",
+      "description": "A cream hoodie with a dark all-over print and contrasting hood lining.",
+      "audience": "kids",
+      "clothing_type": "hoodies",
+      "price_minor": 2450,
+      "variants": [
+        {
+          "sku": "DEMO-KIDS-20-2Y",
+          "size": "2Y",
+          "color": "Cream Print",
+          "stock_quantity": 5
+        },
+        {
+          "sku": "DEMO-KIDS-20-3Y",
+          "size": "3Y",
+          "color": "Cream Print",
+          "stock_quantity": 14
+        },
+        {
+          "sku": "DEMO-KIDS-20-4Y",
+          "size": "4Y",
+          "color": "Cream Print",
+          "stock_quantity": 0
+        }
+      ],
+      "cover": {
+        "path": "images/demo/demo-kids-20.jpg",
+        "alt_text": "A cream hoodie with a dark all-over print and contrasting hood lining.",
+        "storage_id": "emran",
+        "original_key": "demo-products/demo-kids-20/original-9dce4b28e914c4176c9880bc69970fb56a2410efa449cb88661dfbeb65b218e2.jpg",
+        "thumbnail_key": "demo-products/demo-kids-20/thumbnail-b7d181b7381b94b53227ac63bbb28f80c78958b1e80e5d11c50ad9ae8a29a6a0.webp"
+      }
+    }
+  ]
+}

@@ -105,6 +105,17 @@ docker compose --profile catalog up -d catalog-maintenance
 
 For a new bucket, register another storage ID and add its credentials to both configurations before changing the staff default. Use `catalog move-image IMAGE_UUID NEW_STORAGE_ID` to copy and verify both objects, then update the stored location. The cleanup process retains the old copy for 24 hours. Keep its credentials available until cleanup completes. Use `catalog reconcile --delete-orphans` to delete old orphaned objects after reviewing the report. Back up PostgreSQL before deployment and keep the R2 credentials available to verify delivery after a restore.
 
+### Seed the local demo catalog
+
+After applying migrations, register the R2 storage ID from `data/demo-products.json` and configure its credentials and the fixture currency in `backend/.env`. Run these commands from the repository root.
+
+```sh
+uv --directory backend run --locked python -m catalog seed-demo --dry-run
+uv --directory backend run --locked python -m catalog seed-demo
+```
+
+The seed command verifies the originals and thumbnails in R2, then publishes the fixture products in one database transaction. Run it again to restore the fixture. A stable demo key preserves each product ID and its published URL. The shared files under `demo-products/` stay available for future seed runs when a product image is removed from the catalog.
+
 ### Run the catalog checks
 
 The integration test runs migrations in a temporary schema on a test PostgreSQL database and simulates R2 responses. Set `CATALOG_TEST_DATABASE_URL` to a disposable database whose role can create schemas.

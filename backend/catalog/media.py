@@ -21,6 +21,7 @@ from .service import (
     validate_publication,
 )
 from .storage import (
+    DEMO_IMAGE_PREFIX,
     MAX_IMAGE_BYTES,
     ObjectMissing,
     R2Storage,
@@ -192,8 +193,12 @@ def move_image(engine: Engine, storage: R2Storage, image_id: UUID, target_id: st
 
 
 def delete_objects(storage: R2Storage, location: MediaStorageLocation, image: ProductImage) -> None:
+    # The fixture files are shared across databases and can be seeded again.
+    keys = [key for key in (image.original_key, image.thumbnail_key) if not key.startswith(DEMO_IMAGE_PREFIX)]
+    if not keys:
+        return
     with storage.open(location) as client:
-        for key in (image.original_key, image.thumbnail_key):
+        for key in keys:
             delete_object(client, location.bucket_name, key)
 
 

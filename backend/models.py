@@ -23,12 +23,14 @@ class Product(SQLModel, table=True):
             name="ck_product_publish",
         ),
         UniqueConstraint("slug", name="uq_products_slug"),
+        UniqueConstraint("demo_seed_key", name="uq_products_demo_seed_key"),
         Index("ix_products_status_price_id", "status", "price_minor", "id"),
     )
 
     id: int | None = Field(default=None, primary_key=True)
     name: str = Field(min_length=1, max_length=255)
     slug: str = Field(max_length=120)
+    demo_seed_key: str | None = Field(default=None, max_length=120)
     description: str | None = Field(default=None, sa_type=Text)
     price_minor: int | None = Field(default=None, sa_type=BigInteger)
     currency: str | None = Field(default=None, max_length=3)

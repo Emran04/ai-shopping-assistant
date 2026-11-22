@@ -15,6 +15,7 @@ from .service import CatalogError, CatalogSettings
 
 MAX_IMAGE_BYTES = 10 * 1024 * 1024
 MAX_IMAGE_PIXELS = 24_000_000
+DEMO_IMAGE_PREFIX = "demo-products/"
 IMAGE_FORMATS = {"JPEG": ("jpg", "image/jpeg"), "PNG": ("png", "image/png"), "WEBP": ("webp", "image/webp")}
 R2_ENDPOINT = r"https://[a-f0-9]{32}(?:\.(?:eu|us|fedramp))?\.r2\.cloudflarestorage\.com"
 STORAGE_ID = r"[a-z0-9][a-z0-9-]{0,79}"

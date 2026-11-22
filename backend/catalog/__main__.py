@@ -17,6 +17,7 @@ from models import Category, Product, ProductCategory, ProductImage, ProductVari
 from .media import (
     clean_catalog, download_original, move_image, reconcile_catalog, remove_image, reorder_images, upload_image,
 )
+from .seed import DEFAULT_MANIFEST, seed_demo
 from .service import (
     CATEGORY_KINDS, CatalogError, CatalogSettings, label, lock_product, set_categories, set_price,
     set_status, slug_value, upsert_category, upsert_variant,
@@ -90,6 +91,9 @@ def parser() -> argparse.ArgumentParser:
     reconcile = commands.add_parser("reconcile", help="Report missing ready objects and stale orphan objects.")
     reconcile.add_argument("--delete-orphans", action="store_true")
     commands.add_parser("maintain", help="Run hourly cleanup and daily reconciliation.")
+    seed = commands.add_parser("seed-demo", help="Seed demo products with their verified R2 covers.")
+    seed.add_argument("--manifest", type=Path, default=DEFAULT_MANIFEST)
+    seed.add_argument("--dry-run", action="store_true", help="Preview changes without writing to PostgreSQL or R2.")
     return cli
 
 
@@ -186,6 +190,8 @@ def main() -> int:
                 result = clean_catalog(engine, storage)
             case "reconcile":
                 result = reconcile_catalog(engine, storage, delete_orphans=args.delete_orphans)
+            case "seed-demo":
+                result = seed_demo(engine, storage, settings, args.manifest, dry_run=args.dry_run)
             case "maintain":
                 if not settings.storage_credentials:
                     raise CatalogError("Configure R2 credentials before starting catalog maintenance.")
