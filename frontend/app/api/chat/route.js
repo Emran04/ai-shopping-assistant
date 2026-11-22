@@ -15,7 +15,7 @@ export async function POST(request) {
     const response = await fetch(new URL(path, backendUrl), {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message }),
+      body: JSON.stringify({ message, thread_id: body.thread_id, message_id: body.message_id }),
       cache: "no-store",
       signal: AbortSignal.any([request.signal, AbortSignal.timeout(streaming ? 120_000 : 35_000)]),
     });

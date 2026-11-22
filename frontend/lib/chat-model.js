@@ -1,7 +1,9 @@
 const streamType = "application/x-ndjson";
 
-export const chatModel = {
-  async *run({ messages, abortSignal }) {
+export function createChatModel() {
+  let threadId;
+
+  async function* run({ messages, abortSignal }) {
     const latest = messages.findLast(({ role }) => role === "user");
     const message = latest?.content
       .filter(({ type }) => type === "text")
@@ -10,10 +12,11 @@ export const chatModel = {
 
     let reader;
     try {
+      threadId ??= crypto.randomUUID();
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: streamType },
-        body: JSON.stringify({ message }),
+        body: JSON.stringify({ message, thread_id: threadId, message_id: latest?.id }),
         signal: abortSignal,
       });
 
@@ -62,5 +65,7 @@ export const chatModel = {
         reader.releaseLock();
       }
     }
-  },
-};
+  }
+
+  return { run };
+}

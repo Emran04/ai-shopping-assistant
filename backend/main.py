@@ -3,12 +3,17 @@ from collections.abc import AsyncGenerator
 from contextlib import aclosing, asynccontextmanager
 from json import dumps
 from typing import Annotated
+from uuid import UUID
+from weakref import WeakValueDictionary
 
 import logfire
 from chatbot.agent import build_graph, run_reply, stream_reply
 from chatbot.llm import Settings, create_chat_model
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
+from langchain_core.messages import HumanMessage
+from langchain_core.runnables import RunnableConfig
+from langgraph.checkpoint.memory import InMemorySaver
 from openai import APIError, APITimeoutError
 from pydantic import BaseModel, StringConstraints
 from starlette.types import Receive, Scope, Send
@@ -20,6 +25,12 @@ PROVIDER_ERROR_DETAIL = "OpenAI request failed."
 
 class ChatRequest(BaseModel):
     message: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1)]
+    thread_id: UUID | None = None
+    message_id: Annotated[str, StringConstraints(strip_whitespace=True, min_length=1, max_length=128)] | None = None
+
+    def human_message(self) -> HumanMessage:
+        message_id = f"user:{self.message_id}" if self.message_id is not None else None
+        return HumanMessage(content=self.message, id=message_id)
 
 
 class ChatReply(BaseModel):
@@ -72,12 +83,25 @@ def create_app(model=None):
         settings = Settings()
         client = model if model is not None else create_chat_model(settings)
         app.state.graph = build_graph(client) if client is not None else None
+        app.state.memory_graph = build_graph(client, InMemorySaver()) if client is not None else None
+        app.state.thread_locks = WeakValueDictionary()
         app.state.model_name = settings.openai_model
         yield
 
     app = FastAPI(lifespan=lifespan)
     logfire.configure(send_to_logfire="if-token-present")
     logfire.instrument_fastapi(app, capture_headers=False, request_attributes_mapper=lambda *_: {})
+
+    @asynccontextmanager
+    async def chat_graph(thread_id: UUID | None):
+        if thread_id is None:
+            yield app.state.graph, None
+            return
+
+        lock = app.state.thread_locks.setdefault(thread_id, asyncio.Lock())
+        config: RunnableConfig = {"configurable": {"thread_id": str(thread_id)}}
+        async with lock:
+            yield app.state.memory_graph, config
 
     @app.get("/health")
     async def health():
@@ -88,7 +112,8 @@ def create_app(model=None):
         if app.state.graph is None:
             raise HTTPException(503, "Configure OPENAI_API_KEY.")
         try:
-            reply = await run_reply(app.state.graph, body.message, app.state.model_name)
+            async with chat_graph(body.thread_id) as (graph, config):
+                reply = await run_reply(graph, body.human_message(), app.state.model_name, config)
         except (APITimeoutError, TimeoutError):
             raise HTTPException(504, TIMEOUT_DETAIL) from None
         except APIError:
@@ -103,8 +128,14 @@ def create_app(model=None):
     async def chat_stream(body: ChatRequest):
         if app.state.graph is None:
             raise HTTPException(503, "Configure OPENAI_API_KEY.")
-        chunks = stream_reply(app.state.graph, body.message, app.state.model_name)
-        return ChatStreamingResponse(stream_chat_events(chunks))
+
+        async def chunks():
+            async with chat_graph(body.thread_id) as (graph, config):
+                async with aclosing(stream_reply(graph, body.human_message(), app.state.model_name, config)) as reply:
+                    async for text in reply:
+                        yield text
+
+        return ChatStreamingResponse(stream_chat_events(chunks()))
 
     return app
 

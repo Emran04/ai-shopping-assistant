@@ -12,7 +12,7 @@ import {
   ThreadPrimitive,
   useLocalRuntime,
 } from "@assistant-ui/react";
-import { chatModel } from "../lib/chat-model";
+import { createChatModel } from "../lib/chat-model";
 
 const suggestions = [
   ["Compare options", "What should I compare when choosing noise-canceling headphones?"],
@@ -89,6 +89,7 @@ function ShoppingThread() {
 }
 
 export function ShoppingChat() {
+  const [chatModel] = useState(createChatModel);
   const runtime = useLocalRuntime(chatModel);
   const [open, setOpen] = useState(false);
 
