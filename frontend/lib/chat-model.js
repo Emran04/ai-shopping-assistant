@@ -31,6 +31,7 @@ export function createChatModel() {
       reader = response.body.pipeThrough(new TextDecoderStream()).getReader();
       let buffer = "";
       let text = "";
+      let products = [];
 
       while (true) {
         const { done, value } = await reader.read();
@@ -43,8 +44,14 @@ export function createChatModel() {
           if (!line.trim()) continue;
           const event = JSON.parse(line);
           if (event.type === "error") throw new Error(event.detail);
+          if (event.type === "products" && Array.isArray(event.products)) {
+            products = event.products;
+          }
           if (event.type === "done") {
             if (!text.trim()) throw new Error("The assistant returned an empty reply. Try again.");
+            if (products.length) {
+              yield { content: [{ type: "text", text }, { type: "data", name: "products", data: products }] };
+            }
             return;
           }
           if (event.type === "delta" && typeof event.text === "string") {

@@ -18,6 +18,7 @@ from langchain_core.messages import AIMessage
 from PIL import Image
 from sqlalchemy import text
 from sqlalchemy.engine import make_url
+from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session
 
 from catalog.media import clean_catalog, download_original, move_image, reconcile_catalog, remove_image, upload_image
@@ -25,7 +26,7 @@ from catalog.service import CatalogError, CatalogSettings, lock_product, set_cat
 from catalog.storage import prepare_image, register_location
 from database import create_database_engine
 from main import create_app
-from models import MediaRetirement, ProductImage
+from models import MediaRetirement, Product, ProductImage
 
 
 def jpeg(color="olive") -> bytes:
@@ -64,17 +65,22 @@ def s3_error(operation, code):
 
 
 class CatalogModel:
+    def __init__(self, **filters):
+        self.filters = filters or {"audience": ["women"]}
+
     def bind_tools(self, tools, *, parallel_tool_calls):
         async def request_search(messages):
             return AIMessage(content="", tool_calls=[{
-                "name": tools[0].name, "id": "catalog-search", "args": {"audience": ["women"]},
+                "name": tools[0].name, "id": "catalog-search", "args": self.filters,
             }])
 
         return SimpleNamespace(ainvoke=request_search)
 
     async def ainvoke(self, messages):
-        product = json.loads(messages[-1].content)["products"][0]
-        return AIMessage(content=f"[{product['name']}]({product['url']})")
+        result = json.loads(messages[-1].content)
+        if "error" in result:
+            return AIMessage(content=result["error"])
+        return AIMessage(content="Here are the matches." if result["products"] else "No products matched.")
 
 
 class MemoryStorage:
@@ -197,16 +203,24 @@ class CatalogIntegrationTests(unittest.TestCase):
             self.assertEqual(client.get(media_url).status_code, 404)
             with Session(self.engine) as session, session.begin():
                 set_status(session, lock_product(session, 1), "active", "USD")
-            expected_reply = "[Legacy shirt](/catalog/product-1)"
-            chat = client.post("/chat", json={"message": "Show me clothes for women."})
-            self.assertEqual(chat.json()["reply"], expected_reply)
-            streamed = client.post("/chat/stream", json={"message": "Show me clothes for women."})
-            events = [json.loads(line) for line in streamed.text.splitlines()]
-            self.assertEqual("".join(event["text"] for event in events if event["type"] == "delta"), expected_reply)
             for audience in ("men", "women"):
                 result = client.get("/catalog/products", params={"audience": audience, "clothing_type": "t-shirts"})
                 self.assertEqual(result.status_code, 200, result.text)
                 self.assertEqual(result.json()["items"][0]["price_minor"], 2499)
+            products = result.json()["items"]
+            message = {"message": "Show me clothes for women.", "thread_id": str(uuid4()), "message_id": "search"}
+            streamed = client.post("/chat/stream", json=message)
+            events = [json.loads(line) for line in streamed.text.splitlines()]
+            self.assertEqual(events, [
+                {"type": "delta", "text": "Here are the matches."},
+                {"type": "products", "products": products},
+                {"type": "done"},
+            ])
+            with patch("catalog.chat.search_products", side_effect=AssertionError("Cached reply should skip search")):
+                self.assertEqual(client.post("/chat", json=message).json(), {
+                    "reply": "Here are the matches.", "products": products,
+                })
+                self.assertEqual(client.post("/chat/stream", json=message).text, streamed.text)
             for filters in (
                 {"audience": "kids"}, {"size": "M", "color": "Olive"},
                 {"size": "M", "color": "Navy", "in_stock": True}, {"max_price": 2498},
@@ -262,3 +276,38 @@ class CatalogIntegrationTests(unittest.TestCase):
                 set_status(session, lock_product(session, 1), "archived", "USD")
             self.assertEqual(client.get(moved_url, headers={"If-None-Match": '"test"'}).status_code, 404)
             self.assertEqual(client.get("/catalog/products/product-1").status_code, 404)
+
+    def test_chat_search_matches_storefront_filters_order_and_limit(self):
+        with Session(self.engine) as session, session.begin():
+            for index in range(10):
+                product = Product(
+                    name=f"Chat fixture {index}", slug=f"chat-fixture-{index}", first_published_at=datetime.now(UTC),
+                    price_minor=2000 + index, currency="USD",
+                )
+                session.add(product)
+                session.flush()
+                upsert_variant(session, product, f"CHAT-{index}", "M", "Olive", int(index != 0), True, "USD")
+                product.status = "active"
+
+        for in_stock, minimum, count in ((False, 2000, 8), (True, 2000, 8), (True, 2008, 2), (True, 2010, 0)):
+            with self.subTest(in_stock=in_stock, minimum=minimum):
+                model = CatalogModel(query="Chat fixture", sort="price_asc", min_price_minor=minimum, in_stock=in_stock)
+                with patch.dict(os.environ, self.environment), TestClient(create_app(model)) as client:
+                    storefront = client.get("/catalog/products", params={
+                        "q": "Chat fixture", "sort": "price_asc", "min_price": minimum, "in_stock": in_stock,
+                    }).json()["items"]
+                    response = client.post("/chat", json={"message": "Show me clothes."})
+                self.assertEqual(response.status_code, 200, response.text)
+                products = response.json().get("products", [])
+                self.assertEqual(len(products), count)
+                self.assertEqual(products, storefront[:8])
+                if count == 0:
+                    self.assertEqual(response.json(), {"reply": "No products matched."})
+
+        with patch.dict(os.environ, self.environment), TestClient(create_app(CatalogModel())) as client:
+            with patch("catalog.chat.search_products", side_effect=SQLAlchemyError):
+                response = client.post("/chat/stream", json={"message": "Show me clothes."})
+            self.assertEqual([json.loads(line) for line in response.text.splitlines()], [
+                {"type": "delta", "text": "The catalog is temporarily unavailable."},
+                {"type": "done"},
+            ])

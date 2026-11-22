@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { catalogRequest, catalogUrl, minorUnits, priceLabel } from "../../lib/catalog";
-import { CatalogPhoto } from "./catalog-photo";
+import { catalogRequest, catalogUrl, minorUnits } from "../../lib/catalog";
+import { CatalogProductCard } from "./catalog-product-card";
 
 export const metadata = { title: "Shop clothing | Ecomm Assistant" };
 
@@ -146,12 +146,7 @@ export default async function CatalogPage({ searchParams }) {
                 <ul className="catalog-grid">
                   {products.items.map((product) => (
                     <li key={product.id}>
-                      <Link href={"/catalog/" + product.slug} className="catalog-card">
-                        <div className="catalog-photo"><CatalogPhoto photo={product.cover} /></div>
-                        <div className="catalog-card-info"><h3>{product.name}</h3>
-                          <span>{priceLabel(product.price_minor, product.currency)}</span></div>
-                        {!product.in_stock && <p className="catalog-stock">Sold out</p>}
-                      </Link>
+                      <CatalogProductCard product={product} />
                     </li>
                   ))}
                 </ul>

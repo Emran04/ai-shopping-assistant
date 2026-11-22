@@ -225,14 +225,28 @@ h1 {
   background: #edf0e8;
 }
 
-.assistant-message a {
+.assistant-message-text a {
   color: inherit;
   font-weight: 650;
   text-underline-offset: 0.2em;
 }
 
-.message p {
+.message > p {
   margin: 0;
+}
+
+.assistant-message:has(.chat-product-grid) {
+  display: grid;
+  gap: 0.85rem;
+  width: 100%;
+  padding: 0;
+  background: transparent;
+}
+
+.chat-viewport .chat-product-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem 0.75rem;
+  white-space: normal;
 }
 
 .pending,

@@ -10,6 +10,7 @@ from weakref import WeakValueDictionary
 
 import logfire
 from catalog.chat import product_search_tool
+from catalog.queries import ProductSummary
 from catalog.routes import router as catalog_router
 from catalog.service import CatalogSettings
 from catalog.storage import R2Storage
@@ -23,7 +24,7 @@ from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
 from models import Product
 from openai import APIError, APITimeoutError
-from pydantic import BaseModel, StringConstraints
+from pydantic import BaseModel, Field, StringConstraints
 from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session, select
 from starlette.types import Receive, Scope, Send
@@ -45,6 +46,7 @@ class ChatRequest(BaseModel):
 
 class ChatReply(BaseModel):
     reply: str
+    products: list[ProductSummary] = Field(default_factory=list)
 
 
 class ChatStreamingResponse(StreamingResponse):
@@ -74,11 +76,11 @@ class ChatStreamingResponse(StreamingResponse):
             await asyncio.gather(stream, disconnect, return_exceptions=True)
 
 
-async def stream_chat_events(chunks: AsyncGenerator[str]) -> AsyncGenerator[str]:
+async def stream_chat_events(chunks: AsyncGenerator[dict]) -> AsyncGenerator[str]:
     try:
         async with aclosing(chunks):
-            async for text in chunks:
-                yield dumps({"type": "delta", "text": text}) + "\n"
+            async for event in chunks:
+                yield dumps(event) + "\n"
     except (APITimeoutError, TimeoutError):
         yield dumps({"type": "error", "detail": TIMEOUT_DETAIL}) + "\n"
     except APIError:
@@ -137,7 +139,7 @@ def create_app(model=None):
             raise HTTPException(503, "Database is unavailable.") from None
         return {"status": "ok"}
 
-    @app.post("/chat")
+    @app.post("/chat", response_model_exclude_defaults=True)
     async def chat(body: ChatRequest) -> ChatReply:
         if app.state.graph is None:
             raise HTTPException(503, "Configure OPENAI_API_KEY.")
@@ -148,7 +150,7 @@ def create_app(model=None):
             raise HTTPException(504, TIMEOUT_DETAIL) from None
         except APIError:
             raise HTTPException(502, PROVIDER_ERROR_DETAIL) from None
-        return ChatReply(reply=reply)
+        return ChatReply(reply=reply.text, products=reply.response_metadata.get("catalog_products", []))
 
     @app.post(
         "/chat/stream",
@@ -161,9 +163,9 @@ def create_app(model=None):
 
         async def chunks():
             async with chat_graph(body.thread_id) as (graph, config):
-                async with aclosing(stream_reply(graph, body.human_message(), app.state.model_name, config)) as reply:
-                    async for text in reply:
-                        yield text
+                async with aclosing(stream_reply(graph, body.human_message(), app.state.model_name, config)) as events:
+                    async for event in events:
+                        yield event
 
         return ChatStreamingResponse(stream_chat_events(chunks()))
 

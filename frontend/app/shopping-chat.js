@@ -14,6 +14,7 @@ import {
   useLocalRuntime,
 } from "@assistant-ui/react";
 import { createChatModel } from "../lib/chat-model";
+import { CatalogProductCard } from "./catalog/catalog-product-card";
 
 const suggestions = [
   ["Browse T-shirts", "Show me the T-shirts you have in stock."],
@@ -29,7 +30,17 @@ function AssistantText({ text }) {
     parts.push(text.slice(end, match.index), <Link key={match.index} href={match[2]}>{match[1]}</Link>);
     end = match.index + match[0].length;
   }
-  return <span>{parts}{text.slice(end)}</span>;
+  return <span className="assistant-message-text">{parts}{text.slice(end)}</span>;
+}
+
+function AssistantProducts({ data: products }) {
+  return (
+    <ul className="catalog-grid chat-product-grid" aria-label="Matching products">
+      {products.map((product) => (
+        <li key={product.id}><CatalogProductCard product={product} /></li>
+      ))}
+    </ul>
+  );
 }
 
 function UserMessage() {
@@ -48,7 +59,7 @@ function AssistantMessage() {
       <AuiIf condition={({ message }) => message.status?.type === "running" && !message.parts.length}>
         <span className="pending" role="status">Waiting for a reply…</span>
       </AuiIf>
-      <MessagePrimitive.Parts components={{ Text: AssistantText }} />
+      <MessagePrimitive.Parts components={{ Text: AssistantText, data: { by_name: { products: AssistantProducts } } }} />
       <MessagePrimitive.Error>
         <ErrorPrimitive.Root className="error">
           <ErrorPrimitive.Message />
@@ -64,7 +75,14 @@ function AssistantMessage() {
 function ShoppingThread() {
   return (
     <ThreadPrimitive.Root className="chat-thread">
-      <ThreadPrimitive.Viewport className="chat-viewport" role="log" aria-label="Chat messages" tabIndex={0}>
+      <ThreadPrimitive.Viewport
+        className="chat-viewport"
+        turnAnchor="top"
+        scrollToBottomOnInitialize={false}
+        role="log"
+        aria-label="Chat messages"
+        tabIndex={0}
+      >
         <AuiIf condition={({ thread }) => thread.isEmpty}>
           <div className="suggestions">
             <p>Try a question</p>

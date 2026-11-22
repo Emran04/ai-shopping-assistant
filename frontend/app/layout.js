@@ -1,4 +1,5 @@
 import "./globals.css";
+import "./catalog/catalog-product-card.css";
 
 export const metadata = {
   title: "Ecomm Assistant",

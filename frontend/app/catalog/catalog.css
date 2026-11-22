@@ -1,6 +1,5 @@
 .catalog-shell {
   --catalog-panel: #f0ebdf;
-  --catalog-photo: #ece7d9;
   padding-bottom: 6rem;
 }
 
@@ -163,71 +162,9 @@
   margin-bottom: 1rem;
 }
 
-.catalog-results-bar span,
-.catalog-stock {
+.catalog-results-bar span {
   color: var(--muted);
   font-size: 0.85rem;
-}
-
-.catalog-grid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.8rem 0.9rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.catalog-card {
-  display: block;
-  text-decoration: none;
-}
-
-.catalog-card:hover h3 {
-  text-decoration: underline;
-}
-
-.catalog-photo {
-  position: relative;
-  display: grid;
-  place-items: center;
-  aspect-ratio: 4 / 5;
-  overflow: hidden;
-  background: var(--catalog-photo);
-}
-
-.catalog-photo img {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  object-fit: contain;
-}
-
-.catalog-photo-placeholder {
-  display: grid;
-  justify-items: center;
-  color: var(--muted);
-  font-size: 0.78rem;
-}
-
-.catalog-photo-placeholder span {
-  font-size: 1.2rem;
-}
-
-.catalog-card-info {
-  display: grid;
-  gap: 0.15rem;
-  padding-top: 0.65rem;
-}
-
-.catalog-card h3 {
-  overflow-wrap: anywhere;
-  margin: 0;
-  font: 400 1.25rem/1.25 Georgia, serif;
-}
-
-.catalog-card p {
-  margin: 0.25rem 0 0;
 }
 
 .catalog-empty {
@@ -264,7 +201,7 @@
   margin-top: 1.4rem;
 }
 
-.catalog-main-photo {
+.catalog-photo.catalog-main-photo {
   aspect-ratio: 1;
 }
 
@@ -331,12 +268,6 @@
 .catalog-available {
   color: #275d42;
   font-weight: 650;
-}
-
-@media (max-width: 56rem) {
-  .catalog-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
 @media (max-width: 40rem) {

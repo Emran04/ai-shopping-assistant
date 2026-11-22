@@ -44,7 +44,9 @@ export async function POST(request) {
     }
 
     if (typeof data?.reply === "string") {
-      return Response.json({ reply: data.reply });
+      const reply = { reply: data.reply };
+      if (Array.isArray(data.products)) reply.products = data.products;
+      return Response.json(reply);
     }
   } catch (error) {
     if (error.name === "TimeoutError") {

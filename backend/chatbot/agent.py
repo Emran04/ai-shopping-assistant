@@ -3,6 +3,7 @@ from contextlib import aclosing
 from typing import Annotated
 
 import logfire
+from catalog.chat import CHAT_PRODUCT_LIMIT
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import BaseTool
@@ -16,7 +17,7 @@ from .llm import SYSTEM_PROMPT
 
 class ChatState(MessagesState):
     pending_message: Annotated[HumanMessage, UntrackedValue]
-    reply_text: Annotated[str, UntrackedValue]
+    reply: Annotated[AIMessage, UntrackedValue]
 
 
 def build_graph(
@@ -38,16 +39,24 @@ def build_graph(
         reply = await tool_model.ainvoke(messages)
         if catalog_tool and reply.tool_calls:
             results = []
+            products = {}
             for call in reply.tool_calls:
                 if call["name"] == catalog_tool.name:
-                    results.append(await catalog_tool.ainvoke(call))
+                    result = await catalog_tool.ainvoke(call)
+                    results.append(result)
+                    for product in result.artifact or []:
+                        products.setdefault(product["id"], product)
                 else:
                     results.append(ToolMessage("Unknown catalog tool.", tool_call_id=call["id"]))
             final = await model.ainvoke([*messages, reply, *results])
-            reply = AIMessage(id=final.id, content=reply.text + final.text)
+            reply = AIMessage(
+                id=final.id,
+                content=reply.text + final.text,
+                response_metadata={"catalog_products": list(products.values())[:CHAT_PRODUCT_LIMIT]},
+            )
         if not reply.text.strip():
-            return {"reply_text": reply.text}
-        return {"reply_text": reply.text, "messages": [pending, reply]}
+            return {"reply": reply}
+        return {"reply": reply, "messages": [pending, reply]}
 
     # LangGraph accepts this TypedDict, but ty cannot match its state protocol.
     graph = StateGraph(ChatState)  # ty: ignore[invalid-argument-type]
@@ -57,26 +66,26 @@ def build_graph(
     return graph.compile(checkpointer=checkpointer)
 
 
-async def cached_reply(graph, config: RunnableConfig | None, message: HumanMessage) -> str | None:
+async def cached_reply(graph, config: RunnableConfig | None, message: HumanMessage) -> AIMessage | None:
     if config is None or message.id is None:
         return None
     state = await graph.aget_state(config)
     history = state.values.get("messages", [])
     for question, reply in zip(history[::2], history[1::2]):
         if question.id == message.id:
-            return reply.text
+            return reply
     return None
 
 
 async def run_reply(
     graph, message: HumanMessage, model_name: str, config: RunnableConfig | None = None,
-) -> str:
+) -> AIMessage:
     with logfire.span("Run assistant graph", model=model_name) as span:
         try:
             reply = await cached_reply(graph, config, message)
             if reply is None:
                 state = await graph.ainvoke({"pending_message": message}, config)
-                reply = state["reply_text"]
+                reply = state["reply"]
         except (APITimeoutError, TimeoutError) as exc:
             span.set_attribute("outcome", "timeout")
             error = exc
@@ -93,27 +102,31 @@ async def run_reply(
 
 async def stream_reply(
     graph, message: HumanMessage, model_name: str, config: RunnableConfig | None = None,
-) -> AsyncGenerator[str]:
+) -> AsyncGenerator[dict]:
     with logfire.span("Stream assistant graph", model=model_name) as span:
         try:
             reply = await cached_reply(graph, config, message)
             if reply is not None:
-                yield reply
-                span.set_attribute("outcome", "success")
-                return
-            events = graph.astream(
-                {"pending_message": message},
-                config,
-                stream_mode="messages",
-                version="v2",
-            )
-            async with aclosing(events):
-                async for event in events:
-                    chunk, metadata = event["data"]
-                    if metadata.get("langgraph_node") != "assistant" or not isinstance(chunk, AIMessage):
-                        continue
-                    if text := chunk.text:
-                        yield text
+                yield {"type": "delta", "text": reply.text}
+            else:
+                events = graph.astream(
+                    {"pending_message": message},
+                    config,
+                    stream_mode=["messages", "updates"],
+                    version="v2",
+                )
+                async with aclosing(events):
+                    async for event in events:
+                        if event["type"] == "updates":
+                            reply = event["data"]["assistant"]["reply"]
+                            continue
+                        chunk, metadata = event["data"]
+                        if metadata.get("langgraph_node") != "assistant" or not isinstance(chunk, AIMessage):
+                            continue
+                        if text := chunk.text:
+                            yield {"type": "delta", "text": text}
+            if reply is not None and (products := reply.response_metadata.get("catalog_products")):
+                yield {"type": "products", "products": products}
         except (APITimeoutError, TimeoutError) as exc:
             span.set_attribute("outcome", "timeout")
             error = exc
