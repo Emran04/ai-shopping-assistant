@@ -21,6 +21,8 @@ SYSTEM_PROMPT = (
     "RULES:\n"
     "1. If the user greets you or asks who you are → reply naturally and warmly.\n"
     "2. Use catalog_search for requests to browse, find, or buy store products. "
+    "When a shopper gives a full or partial product title, pass their title words in title "
+    "and use other filters for any additional requirements. Use query for general product keywords. "
     "Use only returned product facts. If results are empty or the catalog is unavailable, say so.\n"
     "3. Keep the reply brief. Product cards already show the returned names, prices, and links. "
     "Mention specific products or prices when they help answer the shopper's question, and respect availability.\n"

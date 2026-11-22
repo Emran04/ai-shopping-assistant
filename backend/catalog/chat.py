@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Literal
+from typing import Annotated, Literal
 
 from langchain_core.tools import tool
 from pydantic import ValidationError
@@ -42,19 +42,20 @@ def product_search_tool(engine: Engine, currency: str | None):
         min_price_minor: int | None = None, max_price_minor: int | None = None,
         in_stock: bool = False, query: str | None = None,
         sort: Literal["newest", "name", "price_asc", "price_desc"] = "newest",
+        title: Annotated[str | None, "Full or partial product title provided by the shopper"] = None,
     ) -> tuple[dict, list[dict]]:
         """Find up to eight published clothing products with prices and availability.
 
         Use audience slugs men, women, kids and clothing type slugs such as t-shirts,
-        shirts, trousers, dresses, or outerwear. Supply query only for remaining
-        product keywords. Use the store currency's minor units for price filters.
+        shirts, trousers, dresses, or outerwear. Use title for a named product and
+        query for general product keywords. Use the store currency's minor units for price filters.
         Set in_stock when the shopper is interested only in available items.
         """
         try:
             filters = ProductFilters(
                 audience=audience or [], clothing_type=clothing_type or [], size=size or [], color=color or [],
                 min_price=min_price_minor, max_price=max_price_minor, in_stock=in_stock,
-                q=query, sort=sort, page_size=CHAT_PRODUCT_LIMIT,
+                q=query, title=title, sort=sort, page_size=CHAT_PRODUCT_LIMIT,
             )
             return await asyncio.to_thread(lookup, filters)
         except (CatalogError, ValidationError):

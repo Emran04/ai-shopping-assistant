@@ -6,6 +6,7 @@ export const metadata = { title: "Shop clothing | Ecomm Assistant" };
 
 const filterNames = ["audience", "clothing_type", "size", "color", "min", "max", "q", "in_stock", "sort", "page"];
 const multiValueFilters = new Set(["audience", "clothing_type", "size", "color"]);
+const searchMaxLength = 255;
 const sortOptions = [
   { value: "newest", label: "Newest" },
   { value: "price_asc", label: "Price low to high" },
@@ -18,7 +19,7 @@ function selectedParams(raw) {
   for (const name of filterNames) {
     const values = Array.isArray(raw[name]) ? raw[name] : [raw[name]];
     for (const value of values.slice(0, multiValueFilters.has(name) ? 20 : 1)) {
-      if (value?.trim()) params.append(name, value.trim().slice(0, 120));
+      if (value?.trim()) params.append(name, value.trim().slice(0, name === "q" ? searchMaxLength : 120));
     }
   }
   return params;
@@ -57,7 +58,10 @@ function Filters({ params, categories, products }) {
         {params.getAll("audience").map((audience) => (
           <input key={audience} type="hidden" name="audience" value={audience} />
         ))}
-        <label>Search<input name="q" type="search" maxLength={120} defaultValue={params.get("q") || ""} /></label>
+        <label>
+          Search by title or keyword
+          <input name="q" type="search" maxLength={searchMaxLength} defaultValue={params.get("q") || ""} />
+        </label>
         <FilterSelect name="clothing_type" label="Clothing type" emptyLabel="All types" params={params}
           options={categories.clothing_type.map(({ slug, name }) => ({ value: slug, label: name }))} />
         <FilterSelect name="size" label="Size" emptyLabel="All sizes" options={products.sizes} params={params} />

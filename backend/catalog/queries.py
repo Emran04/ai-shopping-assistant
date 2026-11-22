@@ -3,6 +3,7 @@ from uuid import UUID
 
 from models import (
     MAX_PRICE_MINOR,
+    MAX_PRODUCT_TITLE_LENGTH,
     Category,
     Product,
     ProductCategory,
@@ -27,7 +28,8 @@ class ProductFilters(BaseModel):
     min_price: int | None = Field(default=None, ge=0, le=MAX_PRICE_MINOR, description="Price in minor units")
     max_price: int | None = Field(default=None, ge=0, le=MAX_PRICE_MINOR, description="Price in minor units")
     in_stock: bool = False
-    q: str | None = Field(default=None, max_length=120)
+    q: str | None = Field(default=None, max_length=MAX_PRODUCT_TITLE_LENGTH, description="Product title or keywords")
+    title: str | None = Field(default=None, max_length=MAX_PRODUCT_TITLE_LENGTH, description="Words in the product title")
     sort: Literal["newest", "name", "price_asc", "price_desc"] = "newest"
     page: int = Field(default=1, ge=1, le=100_000)
     page_size: int = Field(default=12, ge=1, le=48)
@@ -144,6 +146,8 @@ def search_products(
         conditions.append(Product.price_minor <= filters.max_price)
     if currency and (filters.min_price is not None or filters.max_price is not None):
         conditions.append(Product.currency == currency)
+    for token in (filters.title or "").replace("\x00", "").split():
+        conditions.append(Product.name.icontains(token, autoescape=True))
     for token in (filters.q or "").replace("\x00", "").split():
         conditions.append(or_(
             Product.name.icontains(token, autoescape=True),

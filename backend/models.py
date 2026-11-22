@@ -6,6 +6,7 @@ from sqlmodel import Field, SQLModel
 
 
 MAX_PRICE_MINOR = 999_999_999_999
+MAX_PRODUCT_TITLE_LENGTH = 255
 
 
 class Product(SQLModel, table=True):
@@ -28,7 +29,7 @@ class Product(SQLModel, table=True):
     )
 
     id: int | None = Field(default=None, primary_key=True)
-    name: str = Field(min_length=1, max_length=255)
+    name: str = Field(min_length=1, max_length=MAX_PRODUCT_TITLE_LENGTH)
     slug: str = Field(max_length=120)
     demo_seed_key: str | None = Field(default=None, max_length=120)
     description: str | None = Field(default=None, sa_type=Text)
