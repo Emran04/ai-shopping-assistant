@@ -2,6 +2,8 @@ import asyncio
 from collections.abc import AsyncGenerator
 from contextlib import aclosing, asynccontextmanager
 from json import dumps
+from os import getenv
+from pathlib import Path
 from typing import Annotated
 from uuid import UUID
 from weakref import WeakValueDictionary
@@ -110,7 +112,6 @@ def create_app(model=None):
 
     app = FastAPI(lifespan=lifespan)
     app.include_router(catalog_router)
-    logfire.configure(send_to_logfire="if-token-present")
     logfire.instrument_fastapi(app, capture_headers=False, request_attributes_mapper=lambda *_: {})
 
     @asynccontextmanager
@@ -169,4 +170,11 @@ def create_app(model=None):
     return app
 
 
+# The wizard saves credentials at the repository root, while uv runs the API from backend/.
+repository_logfire_dir = Path(__file__).resolve().parents[1] / ".logfire"
+logfire.configure(
+    service_name=getenv("LOGFIRE_SERVICE_NAME") or getenv("OTEL_SERVICE_NAME") or "ecomm-assistant-api",
+    send_to_logfire=None if getenv("LOGFIRE_SEND_TO_LOGFIRE") else "if-token-present",
+    data_dir=getenv("LOGFIRE_CREDENTIALS_DIR") or (repository_logfire_dir if repository_logfire_dir.is_dir() else None),
+)
 app = create_app()

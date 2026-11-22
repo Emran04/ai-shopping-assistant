@@ -31,6 +31,8 @@ uv --directory backend run --locked uvicorn main:app --reload
 
 The local defaults are database `ecomm_assistant`, user `ecomm`, password `ecomm`, and port `5432`. To override them for Compose, set `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_FORWARD_PORT` in the root `.env`. For a host-run API, set matching values in `backend/.env` using `POSTGRES_PORT` for the forwarded port, or set `DATABASE_URL` there to a PostgreSQL connection URL.
 
+The host-run API uses the Logfire credential saved by the wizard in the repository's `.logfire/` directory and reports as `ecomm-assistant-api` by default. Set `LOGFIRE_SEND_TO_LOGFIRE=false` in the shell to disable export, including when running local tests.
+
 After changing `backend/models.py`, generate and review a migration against the running database, then apply it:
 
 ```sh
