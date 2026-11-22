@@ -9,13 +9,17 @@ from weakref import WeakValueDictionary
 import logfire
 from chatbot.agent import build_graph, run_reply, stream_reply
 from chatbot.llm import Settings, create_chat_model
-from fastapi import FastAPI, HTTPException
+from database import create_database_engine, get_session
+from fastapi import Depends, FastAPI, HTTPException
 from fastapi.responses import StreamingResponse
 from langchain_core.messages import HumanMessage
 from langchain_core.runnables import RunnableConfig
 from langgraph.checkpoint.memory import InMemorySaver
+from models import Product
 from openai import APIError, APITimeoutError
 from pydantic import BaseModel, StringConstraints
+from sqlalchemy.exc import SQLAlchemyError
+from sqlmodel import Session, select
 from starlette.types import Receive, Scope, Send
 
 CHAT_STREAM_TYPE = "application/x-ndjson"
@@ -86,7 +90,12 @@ def create_app(model=None):
         app.state.memory_graph = build_graph(client, InMemorySaver()) if client is not None else None
         app.state.thread_locks = WeakValueDictionary()
         app.state.model_name = settings.openai_model
-        yield
+        engine = create_database_engine()
+        app.state.database_engine = engine
+        try:
+            yield
+        finally:
+            engine.dispose()
 
     app = FastAPI(lifespan=lifespan)
     logfire.configure(send_to_logfire="if-token-present")
@@ -105,6 +114,14 @@ def create_app(model=None):
 
     @app.get("/health")
     async def health():
+        return {"status": "ok"}
+
+    @app.get("/health/db")
+    def database_health(session: Annotated[Session, Depends(get_session)]):
+        try:
+            session.exec(select(Product.id).limit(1)).first()
+        except SQLAlchemyError:
+            raise HTTPException(503, "Database is unavailable.") from None
         return {"status": "ok"}
 
     @app.post("/chat")

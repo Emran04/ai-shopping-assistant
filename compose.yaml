@@ -1,0 +1,83 @@
+x-postgres-environment: &postgres-environment
+  POSTGRES_DB: ${POSTGRES_DB:-ecomm_assistant}
+  POSTGRES_USER: ${POSTGRES_USER:-ecomm}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-ecomm}
+
+x-backend: &backend
+  build: ./backend
+  image: ecomm-assistant-backend
+  environment:
+    <<: *postgres-environment
+    POSTGRES_HOST: db
+    POSTGRES_PORT: "5432"
+    DATABASE_URL: ${DATABASE_URL:-}
+
+services:
+  db:
+    image: &postgres-image postgres:15
+    environment: *postgres-environment
+    ports:
+      - "127.0.0.1:${POSTGRES_FORWARD_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U \"$$POSTGRES_USER\" -d \"$$POSTGRES_DB\""]
+      interval: 2s
+      timeout: 5s
+      retries: 15
+
+  migrate:
+    <<: *backend
+    command: ["alembic", "upgrade", "head"]
+    depends_on:
+      db:
+        condition: service_healthy
+
+  api:
+    <<: *backend
+    env_file:
+      - path: ./backend/.env
+        required: false
+    ports:
+      - "127.0.0.1:${FASTAPI_PORT:-8000}:8000"
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/health/db', timeout=4).close()"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  adminer-setup:
+    image: *postgres-image
+    environment:
+      PGHOST: db
+      PGDATABASE: ${POSTGRES_DB:-ecomm_assistant}
+      PGUSER: ${POSTGRES_USER:-ecomm}
+      PGPASSWORD: ${POSTGRES_PASSWORD:-ecomm}
+      ADMINER_PASSWORD: ${ADMINER_PASSWORD:-123}
+    entrypoint: ["psql", "--no-psqlrc", "--no-password", "--single-transaction", "--set=ON_ERROR_STOP=1", "--file=/adminer-setup.sql"]
+    volumes:
+      - ./docker/adminer-setup.sql:/adminer-setup.sql:ro
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+
+  adminer:
+    image: adminer:6
+    environment:
+      ADMINER_DEFAULT_SERVER: db
+    ports:
+      - "127.0.0.1:${ADMINER_PORT:-8080}:8080"
+    depends_on:
+      adminer-setup:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "php", "-r", "exit(@file_get_contents('http://127.0.0.1:8080/') === false ? 1 : 0);"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:

@@ -2,15 +2,45 @@
 
 The FastAPI service lives in `backend/`. The Next.js homepage and its shopping chat live in `frontend/`.
 
-## Run locally
+## Run FastAPI and PostgreSQL with Docker
 
-Start the backend from the repository root. FastAPI loads its OpenAI settings from `backend/.env`.
+From the repository root, run:
 
 ```sh
+docker compose up --build --wait
+curl -fsS http://127.0.0.1:8000/health/db
+```
+
+Compose starts PostgreSQL, runs `alembic upgrade head`, and then starts FastAPI. The database check queries the `products` table from the initial migration. PostgreSQL data is stored in the `postgres-data` volume and survives `docker compose down`.
+
+Set `OPENAI_API_KEY` in `backend/.env` to enable chat. The database check and [FastAPI docs](http://127.0.0.1:8000/docs) work without a key.
+
+### Browse data in Adminer
+
+Open [Adminer](http://127.0.0.1:8080) and log in with **PostgreSQL** as the system, `db` as the server, `admin` as the username, `123` as the password, and `ecomm_assistant` as the database. The `admin` role can browse the app's tables and add products. Set `ADMINER_PORT` in the root `.env` to change the host port or `ADMINER_PASSWORD` to choose a password when the role is first created.
+
+### Run FastAPI on the host
+
+For live reload, run PostgreSQL in Docker and use `uv` for FastAPI:
+
+```sh
+docker compose up -d --wait db
+uv --directory backend run --locked alembic upgrade head
 uv --directory backend run --locked uvicorn main:app --reload
 ```
 
-In a second terminal, start the frontend from the repository root.
+The local defaults are database `ecomm_assistant`, user `ecomm`, password `ecomm`, and port `5432`. To override them for Compose, set `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_FORWARD_PORT` in the root `.env`. For a host-run API, set matching values in `backend/.env` using `POSTGRES_PORT` for the forwarded port, or set `DATABASE_URL` there to a PostgreSQL connection URL.
+
+After changing `backend/models.py`, generate and review a migration against the running database, then apply it:
+
+```sh
+uv --directory backend run --locked alembic revision --autogenerate -m "describe schema change"
+uv --directory backend run --locked alembic upgrade head
+```
+
+### Run the frontend
+
+Start Next.js from the repository root.
 
 ```sh
 cd frontend

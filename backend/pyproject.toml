@@ -5,11 +5,15 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "alembic>=1.17",
     "fastapi[standard]>=0.165.0",
     "langchain>=1.5.2",
     "langchain-openai>=1.8.5",
     "langgraph>=1.2.24",
     "logfire[fastapi]>=6.0.0",
+    "psycopg[binary]>=3.2.12",
     "pydantic>=2.14.4",
     "pydantic-settings>=2.16.3",
+    "sqlalchemy>=2.0.44",
+    "sqlmodel>=0.0.27",
 ]

@@ -10,3 +10,9 @@ pydantic-settings                # typed configuration loaded from the environme
 logfire[fastapi]                 # tracing + FastAPI / Pydantic / Pydantic-AI instrumentation
 
 python-dotenv
+
+# --- PostgreSQL ---
+alembic>=1.17
+psycopg[binary]>=3.2.12
+sqlalchemy>=2.0.44
+sqlmodel>=0.0.27
