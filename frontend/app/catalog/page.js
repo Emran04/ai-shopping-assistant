@@ -64,8 +64,23 @@ function Filters({ params, categories, products }) {
         </label>
         <FilterSelect name="clothing_type" label="Clothing type" emptyLabel="All types" params={params}
           options={categories.clothing_type.map(({ slug, name }) => ({ value: slug, label: name }))} />
-        <FilterSelect name="size" label="Size" emptyLabel="All sizes" options={products.sizes} params={params} />
-        <FilterSelect name="color" label="Color" emptyLabel="All colors" options={products.colors} params={params} />
+        {[
+          ["size", "Size", "All sizes", products.sizes],
+          ["color", "Color", "All colors", products.colors],
+        ].map(([name, label, placeholder, options]) => {
+          const selected = params.get(name) || "";
+          const listId = `catalog-${name}-options`;
+          return (
+            <label key={name}>
+              {label}
+              <input key={selected} name={name} list={listId} maxLength={120}
+                placeholder={placeholder} defaultValue={selected} />
+              <datalist id={listId}>
+                {options.map(({ value, label }) => <option key={value} value={label} />)}
+              </datalist>
+            </label>
+          );
+        })}
         {categories.currency && (
           <fieldset>
             <legend>Price ({categories.currency})</legend>

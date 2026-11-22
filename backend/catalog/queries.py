@@ -157,10 +157,11 @@ def search_products(
     enabled = (ProductVariant.product_id == Product.id, ProductVariant.enabled)
     available = exists().where(*enabled, ProductVariant.stock_quantity > 0).label("in_stock")
     variant_conditions = []
-    if filters.size:
-        variant_conditions.append(ProductVariant.size_key.in_([variant_key(value) for value in filters.size]))
-    if filters.color:
-        variant_conditions.append(ProductVariant.color_key.in_([variant_key(value) for value in filters.color]))
+    for column, values in ((ProductVariant.size_key, filters.size), (ProductVariant.color_key, filters.color)):
+        terms = [variant_key(value.replace("\x00", "")) for value in values]
+        matches = [column.contains(term, autoescape=True) for term in terms if term]
+        if matches:
+            variant_conditions.append(or_(*matches))
     if filters.in_stock:
         variant_conditions.append(ProductVariant.stock_quantity > 0)
     if variant_conditions:

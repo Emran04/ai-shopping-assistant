@@ -277,7 +277,7 @@ class CatalogIntegrationTests(unittest.TestCase):
             self.assertEqual(client.get(moved_url, headers={"If-None-Match": '"test"'}).status_code, 404)
             self.assertEqual(client.get("/catalog/products/product-1").status_code, 404)
 
-    def test_product_title_search_in_catalog_and_chat(self):
+    def test_partial_product_search_in_catalog_and_chat(self):
         title = (
             "Northstar Trail Jacket with a detachable hood, reinforced seams, adjustable cuffs, "
             "zippered pockets, and a brushed lining for cool weather"
@@ -293,21 +293,36 @@ class CatalogIntegrationTests(unittest.TestCase):
                 )
                 session.add(product)
                 session.flush()
-                upsert_variant(session, product, slug, "M", "Olive", 1, True, "USD")
+                upsert_variant(session, product, slug, "X-Large", "Dark Olive", 1, True, "USD")
+                if name == title:
+                    upsert_variant(session, product, "NORTHSTAR-M", "Medium", "Navy", 0, True, "USD")
                 product.status = "active"
 
-        partial_title = "NORTHSTAR JACKET"
-        model = CatalogModel(title=partial_title, size=["M"], in_stock=True)
+        partial_title = "ORTHST ACKE"
+        model = CatalogModel(title=partial_title, size=["LARG"], color=["GREY", "OLIV"], in_stock=True)
         with patch.dict(os.environ, self.environment), TestClient(create_app(model)) as client:
-            for params in ({"q": title}, {"title": title}, {"title": partial_title, "size": "M"}):
+            for params in (
+                {"q": title},
+                {"title": title},
+                {"title": partial_title, "size": "X-Large", "color": "Dark Olive"},
+                {"title": partial_title, "size": "LARG", "color": ["GREY", "OLIV"], "in_stock": True},
+            ):
                 response = client.get("/catalog/products", params=params)
                 self.assertEqual(response.status_code, 200, response.text)
                 products = response.json()["items"]
                 self.assertEqual([product["name"] for product in products], [title])
             self.assertEqual(client.get("/catalog/products", params={"q": partial_title}).json()["total"], 2)
-            self.assertEqual(client.get("/catalog/products", params={"title": partial_title, "size": "L"}).json()["total"], 0)
+            for filters in (
+                {"size": "LARG", "color": "NAV"},
+                {"size": "MED", "color": "NAV", "in_stock": True},
+                {"size": "%"},
+                {"color": "OL_V"},
+            ):
+                response = client.get("/catalog/products", params={"title": partial_title, **filters})
+                self.assertEqual(response.status_code, 200, response.text)
+                self.assertEqual(response.json()["total"], 0, filters)
 
-            chat = client.post("/chat/stream", json={"message": "Do you have the Northstar Jacket in medium?"})
+            chat = client.post("/chat/stream", json={"message": "Any Orthst Acke in larg, grey or oliv, in stock?"})
             self.assertEqual(chat.status_code, 200, chat.text)
             self.assertEqual([json.loads(line) for line in chat.text.splitlines()], [
                 {"type": "delta", "text": "Here are the matches."},

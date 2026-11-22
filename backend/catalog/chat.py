@@ -38,7 +38,8 @@ def product_search_tool(engine: Engine, currency: str | None):
     @tool(response_format="content_and_artifact")
     async def catalog_search(
         audience: list[str] | None = None, clothing_type: list[str] | None = None,
-        size: list[str] | None = None, color: list[str] | None = None,
+        size: Annotated[list[str] | None, "Full or partial sizes requested by the shopper"] = None,
+        color: Annotated[list[str] | None, "Full or partial colors requested by the shopper"] = None,
         min_price_minor: int | None = None, max_price_minor: int | None = None,
         in_stock: bool = False, query: str | None = None,
         sort: Literal["newest", "name", "price_asc", "price_desc"] = "newest",
@@ -48,7 +49,8 @@ def product_search_tool(engine: Engine, currency: str | None):
 
         Use audience slugs men, women, kids and clothing type slugs such as t-shirts,
         shirts, trousers, dresses, or outerwear. Use title for a named product and
-        query for general product keywords. Use the store currency's minor units for price filters.
+        query for general product keywords. Pass size and color requests in their
+        respective filters. Use the store currency's minor units for price filters.
         Set in_stock when the shopper is interested only in available items.
         """
         try:
