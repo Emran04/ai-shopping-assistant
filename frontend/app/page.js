@@ -1,13 +1,15 @@
+import Link from "next/link";
 import { ShoppingChat } from "./shopping-chat";
 
 export default function Home() {
   return (
     <div className="site-shell">
-      <header className="site-header">
+      <header className="site-header home-header">
         <div className="wordmark">
           <span className="brand-mark" aria-hidden="true">e.</span>
           Ecomm Assistant
         </div>
+        <nav aria-label="Main navigation"><Link href="/catalog">Shop clothing</Link></nav>
       </header>
 
       <main className="workspace">

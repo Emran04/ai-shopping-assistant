@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import {
   ActionBarPrimitive,
   AssistantModalPrimitive,
@@ -15,10 +16,21 @@ import {
 import { createChatModel } from "../lib/chat-model";
 
 const suggestions = [
-  ["Compare options", "What should I compare when choosing noise-canceling headphones?"],
-  ["Shop on a budget", "What should I look for in a coffee maker under $100?"],
-  ["Find a gift", "Suggest a few practical gifts for someone who loves cooking."],
+  ["Browse T-shirts", "Show me the T-shirts you have in stock."],
+  ["Find my size", "Do you have women's outerwear in medium?"],
+  ["Shop for kids", "Show me clothing available for kids."],
 ];
+
+function AssistantText({ text }) {
+  const productLink = /\[([^\]\n]+)\]\((\/catalog\/[a-z0-9]+(?:-[a-z0-9]+)*)\)/g;
+  const parts = [];
+  let end = 0;
+  for (const match of text.matchAll(productLink)) {
+    parts.push(text.slice(end, match.index), <Link key={match.index} href={match[2]}>{match[1]}</Link>);
+    end = match.index + match[0].length;
+  }
+  return <span>{parts}{text.slice(end)}</span>;
+}
 
 function UserMessage() {
   return (
@@ -36,7 +48,7 @@ function AssistantMessage() {
       <AuiIf condition={({ message }) => message.status?.type === "running" && !message.parts.length}>
         <span className="pending" role="status">Waiting for a reply…</span>
       </AuiIf>
-      <MessagePrimitive.Parts />
+      <MessagePrimitive.Parts components={{ Text: AssistantText }} />
       <MessagePrimitive.Error>
         <ErrorPrimitive.Root className="error">
           <ErrorPrimitive.Message />

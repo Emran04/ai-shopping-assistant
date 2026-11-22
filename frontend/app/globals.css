@@ -46,6 +46,17 @@ button:not(:disabled) {
   border-bottom: 1px solid var(--line);
 }
 
+.home-header {
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.home-header a {
+  color: inherit;
+  font-weight: 700;
+  text-underline-offset: 0.25em;
+}
+
 .wordmark {
   display: flex;
   align-items: center;
@@ -212,6 +223,12 @@ h1 {
 .assistant-message {
   align-self: start;
   background: #edf0e8;
+}
+
+.assistant-message a {
+  color: inherit;
+  font-weight: 650;
+  text-underline-offset: 0.2em;
 }
 
 .message p {
