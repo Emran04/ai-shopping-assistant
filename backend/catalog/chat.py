@@ -44,7 +44,7 @@ def product_search_tool(engine: Engine, currency: str | None):
         sort: Literal["newest", "name", "price_asc", "price_desc"] = "newest",
         title: Annotated[str | None, "Full or partial product title provided by the shopper"] = None,
     ) -> tuple[dict, list[dict]]:
-        """Find up to eight published clothing products with prices and availability.
+        """Find up to eight published clothing products with prices, sizes, colors, and categories etc.
 
         Use audience slugs men, women, kids and clothing type slugs such as t-shirts,
         shirts, trousers, dresses, or outerwear. Use title for a named product and
