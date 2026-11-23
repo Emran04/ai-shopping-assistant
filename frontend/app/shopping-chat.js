@@ -109,7 +109,7 @@ function ShoppingThread({ quota, checking, sessionError, onCheckAgain }) {
         <aside className="chat-notice" aria-label="Chat limit">
           <div role="status">
             <strong>You’ve reached your chat limit.</strong>
-            <p>To reset it, call customer care at <a href={`tel:${quota.supportPhone}`}>{quota.supportPhone}</a> and share this reference.</p>
+            <p>To reset it, email <a href={`mailto:${quota.supportEmail}`}>{quota.supportEmail}</a> and share this reference.</p>
             <code>{quota.customerId}</code>
           </div>
           <button type="button" className="retry" onClick={onCheckAgain} disabled={checking}>Check again</button>

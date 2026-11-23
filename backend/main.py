@@ -16,9 +16,15 @@ from catalog.routes import router as catalog_router
 from catalog.service import CatalogSettings
 from catalog.storage import R2Storage
 from chatbot.agent import build_graph, cached_reply, run_reply, stream_reply
+from chatbot.guardrails import Guardrails
 from chatbot.llm import Settings, create_chat_model
-from chatbot.quota import ChatSettings, CustomerUsage, get_customer_usage, reserve_message
-from config import SUPPORT_PHONE
+from chatbot.quota import (
+    ChatSettings,
+    CustomerUsage,
+    get_customer_usage,
+    reserve_message,
+)
+from config import SUPPORT_EMAIL
 from database import create_database_engine, get_session
 from fastapi import Depends, FastAPI, HTTPException, Request, Response
 from fastapi.concurrency import run_in_threadpool
@@ -59,7 +65,7 @@ class ChatReply(BaseModel):
 class ChatSession(BaseModel):
     customer_id: UUID
     messages_remaining: int
-    support_phone: str = SUPPORT_PHONE
+    support_email: str = SUPPORT_EMAIL
 
 
 @dataclass(frozen=True)
@@ -75,7 +81,7 @@ def set_chat_session(response: Response, request: Request, usage: CustomerUsage,
         "Cache-Control": "no-store",
         "X-Chat-Customer-Id": str(usage.customer_id),
         "X-Chat-Messages-Remaining": str(remaining),
-        "X-Chat-Support-Phone": SUPPORT_PHONE,
+        "X-Chat-Support-Email": SUPPORT_EMAIL,
     })
     if usage.new_token is not None:
         response.set_cookie(
@@ -125,7 +131,7 @@ async def stream_chat_events(chunks: AsyncGenerator[dict]) -> AsyncGenerator[str
         yield '{"type":"done"}\n'
 
 
-def create_app(model=None):
+def create_app(model=None, *, guardrails: Guardrails | None = None):
     @asynccontextmanager
     async def lifespan(app):
         settings = Settings()
@@ -134,10 +140,17 @@ def create_app(model=None):
         app.state.catalog_settings = catalog_settings
         app.state.catalog_storage = R2Storage(catalog_settings)
         client = model if model is not None else create_chat_model(settings)
+        active_guardrails = guardrails
+        if active_guardrails is None and model is None and client is not None:
+            active_guardrails = Guardrails(client)
         engine = create_database_engine()
         try:
             catalog_tool = product_search_tool(engine, catalog_settings.currency) if hasattr(client, "bind_tools") else None
-            graph_options = {"catalog_tool": catalog_tool, "currency": catalog_settings.currency}
+            graph_options = {
+                "catalog_tool": catalog_tool,
+                "currency": catalog_settings.currency,
+                "guardrails": active_guardrails,
+            }
             app.state.graph = build_graph(client, **graph_options) if client is not None else None
             app.state.memory_graph = (
                 build_graph(client, InMemorySaver(), **graph_options) if client is not None else None
@@ -190,7 +203,7 @@ def create_app(model=None):
                     set_chat_session(response, request, usage, 0)
                     raise HTTPException(
                         429,
-                        f"You've reached your chat limit. Contact customer care at {SUPPORT_PHONE} "
+                        f"You've reached your chat limit. Email {SUPPORT_EMAIL} "
                         f"and share reference {usage.customer_id} to reset it.",
                         headers=dict(response.headers),
                     )
@@ -253,4 +266,5 @@ logfire.configure(
     send_to_logfire=None if getenv("LOGFIRE_SEND_TO_LOGFIRE") else "if-token-present",
     data_dir=getenv("LOGFIRE_CREDENTIALS_DIR") or (repository_logfire_dir if repository_logfire_dir.is_dir() else None),
 )
+logfire.instrument_openai()
 app = create_app()

@@ -2,10 +2,10 @@ const streamType = "application/x-ndjson";
 
 function chatQuota(response) {
   const customerId = response.headers.get("X-Chat-Customer-Id");
-  const supportPhone = response.headers.get("X-Chat-Support-Phone");
+  const supportEmail = response.headers.get("X-Chat-Support-Email");
   const remaining = response.headers.get("X-Chat-Messages-Remaining");
-  if (customerId && supportPhone && remaining !== null) {
-    return { customerId, supportPhone, remaining: Number(remaining) };
+  if (customerId && supportEmail && remaining !== null) {
+    return { customerId, supportEmail, remaining: Number(remaining) };
   }
   return null;
 }

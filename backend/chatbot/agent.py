@@ -1,5 +1,5 @@
 from collections.abc import AsyncGenerator
-from contextlib import aclosing
+from operator import add
 from typing import Annotated
 
 import logfire
@@ -12,17 +12,27 @@ from langgraph.checkpoint.memory import InMemorySaver
 from langgraph.graph import END, START, MessagesState, StateGraph
 from openai import APIError, APITimeoutError
 
+from .guardrails import GUARDRAIL_BLOCKED_MESSAGE, Guardrails
 from .llm import SYSTEM_PROMPT
 
 
 class ChatState(MessagesState):
     pending_message: Annotated[HumanMessage, UntrackedValue]
     reply: Annotated[AIMessage, UntrackedValue]
+    blocked_message_ids: Annotated[list[str], add]
+
+
+def blocked_reply(message: HumanMessage) -> dict:
+    reply = AIMessage(content=GUARDRAIL_BLOCKED_MESSAGE)
+    if message.id is not None:
+        return {"reply": reply, "blocked_message_ids": [message.id]}
+    return {"reply": reply}
 
 
 def build_graph(
     model, checkpointer: InMemorySaver | None = None, *,
     catalog_tool: BaseTool | None = None, currency: str | None = None,
+    guardrails: Guardrails | None = None,
 ):
     tool_model = model.bind_tools([catalog_tool], parallel_tool_calls=False) if catalog_tool else model
     prompt = SYSTEM_PROMPT
@@ -31,6 +41,8 @@ def build_graph(
 
     async def assistant(state: ChatState):
         pending = state["pending_message"]
+        if guardrails is not None and await guardrails.blocks_input(pending.text):
+            return blocked_reply(pending)
         messages = [
             SystemMessage(content=prompt),
             *state.get("messages", []),
@@ -54,6 +66,8 @@ def build_graph(
                 content=reply.text + final.text,
                 response_metadata={"catalog_products": list(products.values())[:CHAT_PRODUCT_LIMIT]},
             )
+        if guardrails is not None and await guardrails.blocks_output(reply.text):
+            return blocked_reply(pending)
         if not reply.text.strip():
             return {"reply": reply}
         return {"reply": reply, "messages": [pending, reply]}
@@ -70,6 +84,8 @@ async def cached_reply(graph, config: RunnableConfig | None, message: HumanMessa
     if config is None or message.id is None:
         return None
     state = await graph.aget_state(config)
+    if message.id in state.values.get("blocked_message_ids", []):
+        return AIMessage(content=GUARDRAIL_BLOCKED_MESSAGE)
     history = state.values.get("messages", [])
     for question, reply in zip(history[::2], history[1::2]):
         if question.id == message.id:
@@ -108,26 +124,12 @@ async def stream_reply(
     with logfire.span("Stream assistant graph", model=model_name) as span:
         try:
             reply = cached
-            if reply is not None:
+            if reply is None:
+                state = await graph.ainvoke({"pending_message": message}, config)
+                reply = state["reply"]
+            if reply.text.strip():
                 yield {"type": "delta", "text": reply.text}
-            else:
-                events = graph.astream(
-                    {"pending_message": message},
-                    config,
-                    stream_mode=["messages", "updates"],
-                    version="v2",
-                )
-                async with aclosing(events):
-                    async for event in events:
-                        if event["type"] == "updates":
-                            reply = event["data"]["assistant"]["reply"]
-                            continue
-                        chunk, metadata = event["data"]
-                        if metadata.get("langgraph_node") != "assistant" or not isinstance(chunk, AIMessage):
-                            continue
-                        if text := chunk.text:
-                            yield {"type": "delta", "text": text}
-            if reply is not None and (products := reply.response_metadata.get("catalog_products")):
+            if products := reply.response_metadata.get("catalog_products"):
                 yield {"type": "products", "products": products}
         except (APITimeoutError, TimeoutError) as exc:
             span.set_attribute("outcome", "timeout")

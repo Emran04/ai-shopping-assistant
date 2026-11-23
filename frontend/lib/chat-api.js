@@ -1,5 +1,5 @@
 const customerCookie = "ecomm_chat_customer";
-const quotaHeaders = ["X-Chat-Customer-Id", "X-Chat-Messages-Remaining", "X-Chat-Support-Phone"];
+const quotaHeaders = ["X-Chat-Customer-Id", "X-Chat-Messages-Remaining", "X-Chat-Support-Email"];
 
 export function chatBackendRequest(request, path, timeout, body) {
   const customer = request.cookies.get(customerCookie);

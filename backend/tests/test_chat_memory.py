@@ -4,14 +4,16 @@ import unittest
 from contextlib import AsyncExitStack
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from unittest.mock import patch
+from unittest.mock import AsyncMock, Mock, patch
 from uuid import UUID, uuid4
 
 from httpx import ASGITransport, AsyncClient
 from langchain_core.messages import AIMessage
 from sqlmodel import create_engine
 
+from chatbot.guardrails import GuardrailDecision, Guardrails
 from chatbot.quota import reset_usage
+from config import REFUSAL_MESSAGE, SUPPORT_EMAIL
 from main import CHAT_COOKIE, create_app
 from models import ChatCustomer
 
@@ -42,7 +44,13 @@ def stream_events(response):
 class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
     async def asyncSetUp(self):
         self.model = FakeModel()
-        self.app = create_app(self.model)
+        self.classify = AsyncMock(return_value={
+            "parsed": GuardrailDecision(violation=0, category=None, rationale="Allowed"),
+            "parsing_error": None,
+        })
+        classifier_model = Mock()
+        classifier_model.with_structured_output.return_value.ainvoke = self.classify
+        self.app = create_app(self.model, guardrails=Guardrails(classifier_model))
         stack = AsyncExitStack()
         self.addAsyncCleanup(stack.aclose)
         directory = stack.enter_context(TemporaryDirectory())
@@ -59,6 +67,45 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
         return await self.client.post(
             path, json={"message": message, "thread_id": self.thread, **fields}
         )
+
+    async def test_guardrails_block_before_agent_and_before_streaming(self):
+        allow = self.classify.return_value
+        deny_input = {
+            "parsed": GuardrailDecision(violation=1, category="prompt_extraction", rationale="Blocked"),
+            "parsing_error": None,
+        }
+        deny_output = {
+            "parsed": GuardrailDecision(violation=1, category="unauthorized_commitment", rationale="Blocked"),
+            "parsing_error": None,
+        }
+        self.classify.side_effect = [deny_input, allow, deny_output, allow, allow]
+
+        blocked_input = await self.send("input to block", message_id="input")
+        self.assertEqual(blocked_input.json(), {"reply": REFUSAL_MESSAGE})
+        self.assertEqual(self.model.calls, [])
+        self.assertEqual(self.classify.await_count, 1)
+
+        blocked_output = await self.send("reply to block", message_id="output", path="/chat/stream")
+        self.assertEqual(stream_events(blocked_output), [
+            {"type": "delta", "text": REFUSAL_MESSAGE}, {"type": "done"},
+        ])
+        self.assertEqual(self.model.calls, [["reply to block"]])
+        self.assertEqual(self.classify.await_count, 3)
+        self.assertEqual(self.classify.await_args.args[0][-1].content, "REPLY TO BLOCK")
+
+        replay = await self.send("reply to block", message_id="output")
+        self.assertEqual(replay.json(), {"reply": REFUSAL_MESSAGE})
+        self.assertEqual(replay.headers["x-chat-messages-remaining"], blocked_output.headers["x-chat-messages-remaining"])
+        self.assertEqual(self.classify.await_count, 3)
+
+        self.assertEqual((await self.send("next")).json(), {"reply": "NEXT"})
+        self.assertEqual(self.model.calls[-1], ["next"])
+
+    async def test_invalid_guardrail_decision_blocks_the_turn(self):
+        self.classify.return_value = {"parsed": None, "parsing_error": ValueError("Invalid output")}
+        response = await self.send("normal question")
+        self.assertEqual(response.json(), {"reply": REFUSAL_MESSAGE})
+        self.assertEqual(self.model.calls, [])
 
     async def test_streaming_and_json_share_history_and_isolate_threads(self):
         response = await self.send("first", path="/chat/stream")
@@ -160,6 +207,8 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
                 self.assertIn("HttpOnly", session.headers["set-cookie"])
                 self.assertNotIn(customer, session.headers["set-cookie"])
                 self.assertEqual(session.json()["messages_remaining"], 2)
+                self.assertEqual(session.json()["support_email"], SUPPORT_EMAIL)
+                self.assertEqual(session.headers["x-chat-support-email"], SUPPORT_EMAIL)
 
                 first = await self.send("first", message_id="one")
                 self.assertEqual(first.headers["x-chat-messages-remaining"], "1")
@@ -176,6 +225,8 @@ class ChatMemoryTests(unittest.IsolatedAsyncioTestCase):
                     blocked = await self.send("blocked", path=path, thread_id=str(uuid4()))
                     self.assertEqual(blocked.status_code, 429)
                     self.assertIn(customer, blocked.json()["detail"])
+                    self.assertIn(SUPPORT_EMAIL, blocked.json()["detail"])
+                    self.assertEqual(blocked.headers["x-chat-support-email"], SUPPORT_EMAIL)
                 self.assertEqual(self.model.calls, [["first"], ["last"]])
 
                 async with AsyncClient(transport=ASGITransport(app=self.app), base_url="http://test") as other:
