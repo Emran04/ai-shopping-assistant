@@ -1,4 +1,5 @@
 from typing import Annotated, Literal
+from urllib.parse import quote
 from uuid import UUID
 
 from models import (
@@ -104,18 +105,22 @@ def catalog_categories(session: Session, product_id: int | None = None) -> Categ
     return result
 
 
-def thumbnail(image: ProductImage | None) -> Thumbnail | None:
+def thumbnail(image: ProductImage | None, image_cdn_url: str | None) -> Thumbnail | None:
     if image is None:
         return None
-    return Thumbnail(
-        id=image.id, url=f"/catalog/media/{image.product_id}/{image.id}/thumbnail", alt_text=image.alt_text,
-    )
+    if image_cdn_url:
+        url = f"{image_cdn_url}/{quote(image.thumbnail_key)}"
+    else:
+        url = f"/catalog/media/{image.product_id}/{image.id}/thumbnail"
+    return Thumbnail(id=image.id, url=url, alt_text=image.alt_text)
 
 
-def summarize(product: Product, available: bool, image: ProductImage | None) -> ProductSummary:
+def summarize(
+    product: Product, available: bool, image: ProductImage | None, image_cdn_url: str | None,
+) -> ProductSummary:
     return ProductSummary(
         id=product.id, slug=product.slug, name=product.name, price_minor=product.price_minor,
-        currency=product.currency, in_stock=available, cover=thumbnail(image),
+        currency=product.currency, in_stock=available, cover=thumbnail(image, image_cdn_url),
     )
 
 
@@ -128,7 +133,8 @@ def filter_facets(session: Session, value, name) -> list[Facet]:
 
 
 def search_products(
-    session: Session, filters: ProductFilters, currency: str | None, *, include_facets: bool = False,
+    session: Session, filters: ProductFilters, currency: str | None, *,
+    include_facets: bool = False, image_cdn_url: str | None = None,
 ) -> ProductPage:
     if filters.min_price is not None and filters.max_price is not None and filters.min_price > filters.max_price:
         raise CatalogError("Minimum price must be less than or equal to maximum price.")
@@ -184,7 +190,7 @@ def search_products(
         .offset((filters.page - 1) * filters.page_size).limit(filters.page_size)
     ).all()
     return ProductPage(
-        items=[summarize(product, in_stock, cover) for product, in_stock, cover in rows],
+        items=[summarize(product, in_stock, cover, image_cdn_url) for product, in_stock, cover in rows],
         page=filters.page, page_size=filters.page_size,
         total=session.exec(select(func.count()).select_from(Product).where(*conditions)).one(),
         currency=currency,
@@ -193,7 +199,7 @@ def search_products(
     )
 
 
-def product_detail(session: Session, slug: str) -> ProductDetail | None:
+def product_detail(session: Session, slug: str, *, image_cdn_url: str | None = None) -> ProductDetail | None:
     product = session.exec(
         select(Product).where(Product.slug == slug, Product.status == "active")
     ).one_or_none()
@@ -206,8 +212,10 @@ def product_detail(session: Session, slug: str) -> ProductDetail | None:
         ).order_by(ProductVariant.id))
     ]
     images = gallery(session, product.id)
-    summary = summarize(product, any(variant.in_stock for variant in variants), images[0] if images else None)
+    summary = summarize(
+        product, any(variant.in_stock for variant in variants), images[0] if images else None, image_cdn_url,
+    )
     return ProductDetail(
         **summary.model_dump(), description=product.description, categories=catalog_categories(session, product.id),
-        variants=variants, images=[thumbnail(image) for image in images],
+        variants=variants, images=[thumbnail(image, image_cdn_url) for image in images],
     )

@@ -145,7 +145,11 @@ def create_app(model=None, *, guardrails: Guardrails | None = None):
             active_guardrails = Guardrails(client)
         engine = create_database_engine()
         try:
-            catalog_tool = product_search_tool(engine, catalog_settings.currency) if hasattr(client, "bind_tools") else None
+            catalog_tool = None
+            if hasattr(client, "bind_tools"):
+                catalog_tool = product_search_tool(
+                    engine, catalog_settings.currency, image_cdn_url=catalog_settings.image_cdn_url,
+                )
             graph_options = {
                 "catalog_tool": catalog_tool,
                 "currency": catalog_settings.currency,

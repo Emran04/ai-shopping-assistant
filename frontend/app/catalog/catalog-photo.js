@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 export function CatalogPhoto({ photo, eager = false, decorative = false }) {
-  const src = photo ? "/api" + photo.url : null;
+  const src = photo?.url.startsWith("/") ? "/api" + photo.url : photo?.url;
   const [failedUrl, setFailedUrl] = useState(null);
 
   if (!src || src === failedUrl) {

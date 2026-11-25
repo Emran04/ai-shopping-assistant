@@ -15,10 +15,10 @@ logger = logging.getLogger(__name__)
 CHAT_PRODUCT_LIMIT = 8
 
 
-def product_search_tool(engine: Engine, currency: str | None):
+def product_search_tool(engine: Engine, currency: str | None, *, image_cdn_url: str | None = None):
     def lookup(filters: ProductFilters) -> tuple[dict, list[dict]]:
         with Session(engine) as session:
-            result = search_products(session, filters, currency)
+            result = search_products(session, filters, currency, image_cdn_url=image_cdn_url)
         content = {
             "total": result.total,
             "products": [

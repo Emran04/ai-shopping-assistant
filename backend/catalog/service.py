@@ -10,7 +10,7 @@ from models import (
     ProductImage,
     ProductVariant,
 )
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field, HttpUrl, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from sqlalchemy import delete, exists
 from sqlmodel import Session, select
@@ -39,6 +39,17 @@ class CatalogSettings(BaseSettings):
     currency: str | None = Field(default=None, pattern=r"^[A-Z]{3}$")
     default_storage_id: str | None = None
     storage_credentials: dict[str, StorageCredentials] = Field(default_factory=dict)
+    image_cdn_url: str | None = Field(default=None, validation_alias="IMAGE_CDN_URL")
+
+    @field_validator("image_cdn_url")
+    @classmethod
+    def normalize_image_cdn_url(cls, value: str | None) -> str | None:
+        if value is None or not (base := value.strip()):
+            return None
+        url = HttpUrl(base if "://" in base else f"https://{base}")
+        if url.query is not None or url.fragment is not None:
+            raise ValueError("Use an image CDN base URL without a query or fragment.")
+        return str(url).rstrip("/")
 
 
 def label(value: str, max_length: int, field: str) -> str:

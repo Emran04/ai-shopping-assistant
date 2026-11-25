@@ -48,15 +48,16 @@ def categories(request: Request, session: DatabaseSession) -> CatalogIndex:
 
 @router.get("/products")
 def products(request: Request, filters: Annotated[ProductFilters, Query()], session: DatabaseSession) -> ProductPage:
+    settings = request.app.state.catalog_settings
     try:
-        return search_products(session, filters, request.app.state.catalog_settings.currency, include_facets=True)
+        return search_products(session, filters, settings.currency, include_facets=True, image_cdn_url=settings.image_cdn_url)
     except CatalogError as exc:
         raise HTTPException(422, str(exc)) from exc
 
 
 @router.get("/products/{slug}")
-def product(slug: str, session: DatabaseSession) -> ProductDetail:
-    result = product_detail(session, slug)
+def product(slug: str, request: Request, session: DatabaseSession) -> ProductDetail:
+    result = product_detail(session, slug, image_cdn_url=request.app.state.catalog_settings.image_cdn_url)
     if result is None:
         raise HTTPException(404, "Product not found.")
     return result

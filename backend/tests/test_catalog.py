@@ -22,6 +22,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from sqlmodel import Session
 
 from catalog.media import clean_catalog, download_original, move_image, reconcile_catalog, remove_image, upload_image
+from catalog.queries import thumbnail
 from catalog.service import CatalogError, CatalogSettings, lock_product, set_categories, set_price, set_status, upsert_variant
 from catalog.storage import prepare_image, register_location
 from database import create_database_engine
@@ -58,6 +59,16 @@ class ImageProcessingTests(unittest.TestCase):
         for invalid in invalid_images:
             with self.assertRaises(CatalogError):
                 prepare_image(BytesIO(invalid))
+
+
+class ThumbnailURLTests(unittest.TestCase):
+    def test_uses_proxy_without_cdn_and_encodes_cdn_object_key(self):
+        image = ProductImage(id=uuid4(), product_id=1, thumbnail_key="sample photos/item #1.webp", alt_text="Front view")
+        self.assertEqual(thumbnail(image, None).url, f"/catalog/media/1/{image.id}/thumbnail")
+        self.assertEqual(
+            thumbnail(image, "https://cdn.example.com/images").url,
+            "https://cdn.example.com/images/sample%20photos/item%20%231.webp",
+        )
 
 
 def s3_error(operation, code):
@@ -196,7 +207,8 @@ class CatalogIntegrationTests(unittest.TestCase):
         download_original(self.engine, storage, image_id, downloaded)
         self.assertEqual(downloaded.getvalue(), source)
 
-        with patch.dict(os.environ, self.environment), TestClient(create_app(CatalogModel())) as client:
+        environment = self.environment | {"IMAGE_CDN_URL": "cdn.example.com/"}
+        with patch.dict(os.environ, environment), TestClient(create_app(CatalogModel())) as client:
             client.app.state.catalog_storage = storage
             self.assertEqual(client.get("/health/db").status_code, 200)
             self.assertEqual(client.get("/catalog/products/product-1").status_code, 404)
@@ -208,6 +220,8 @@ class CatalogIntegrationTests(unittest.TestCase):
                 self.assertEqual(result.status_code, 200, result.text)
                 self.assertEqual(result.json()["items"][0]["price_minor"], 2499)
             products = result.json()["items"]
+            cdn_url = "https://cdn.example.com/" + first.thumbnail_key
+            self.assertEqual(products[0]["cover"]["url"], cdn_url)
             message = {"message": "Show me clothes for women.", "thread_id": str(uuid4()), "message_id": "search"}
             streamed = client.post("/chat/stream", json=message)
             events = [json.loads(line) for line in streamed.text.splitlines()]
@@ -229,6 +243,8 @@ class CatalogIntegrationTests(unittest.TestCase):
             self.assertEqual(client.get("/catalog/products?min_price=3000&max_price=2000").status_code, 422)
             detail = client.get("/catalog/products/product-1").json()
             self.assertEqual(detail["cover"]["id"], str(image_id))
+            self.assertEqual(detail["cover"]["url"], cdn_url)
+            self.assertEqual(detail["images"][0]["url"], cdn_url)
             self.assertEqual([item["in_stock"] for item in detail["variants"]], [True, False])
             thumb = client.get(media_url)
             self.assertEqual(thumb.status_code, 200)
