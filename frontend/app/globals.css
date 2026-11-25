@@ -77,7 +77,7 @@ button:not(:disabled) {
 }
 
 .workspace {
-  padding-block: clamp(3rem, 15vh, 10rem) 6rem;
+  padding-block: clamp(3rem, 8vh, 7rem) 6rem;
 }
 
 h1 {
@@ -91,6 +91,43 @@ h1 {
   margin: 1.6rem 0 0;
   color: var(--muted);
   font-size: 1.0625rem;
+}
+
+.home-products {
+  margin-top: clamp(2.5rem, 7vh, 5rem);
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.home-products-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.home-products-header h2 {
+  margin: 0;
+  font: 400 clamp(1.65rem, 4vw, 2.75rem)/1.1 Georgia, serif;
+  letter-spacing: -0.035em;
+}
+
+.home-products-header a {
+  color: inherit;
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-underline-offset: 0.25em;
+}
+
+.home-products .catalog-grid {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.home-products-status {
+  margin: 0;
+  color: var(--muted);
 }
 
 .chat-anchor {
@@ -358,6 +395,10 @@ h1 {
 
   .intro p {
     margin-top: 1rem;
+  }
+
+  .home-products .catalog-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
