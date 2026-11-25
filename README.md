@@ -1,50 +1,107 @@
 # Ecomm Assistant
 
-The FastAPI service lives in `backend/`. The Next.js storefront and shopping chat live in `frontend/`.
+An AI shopping assistant for a clothing storefront. Shoppers can ask what fits their size, style, or budget, refine the request in a follow-up, and open matching product pages from cards inside the chat.
 
-## Run FastAPI and PostgreSQL with Docker
+[Try it locally](#quick-start) · [Chatbot architecture](#chatbot-architecture) · [Backend guide](backend/README.md) · [Frontend guide](frontend/README.md)
 
-From the repository root, run:
+## How shoppers use it
+
+Open **Shopping chat** from the homepage or a catalog page and ask, “Show me men’s T-shirts under $25 that are in stock.” Then ask, “What about navy in medium?” The assistant uses the previous turn to interpret the follow-up and searches the published catalog for the updated criteria. When it finds matches, the reply can include up to eight cards with product names, prices, availability, photos when available, and links to the detail pages.
+
+Shoppers can also browse the storefront directly. The catalog supports keyword search, size and color filters, price ranges, stock filters, sorting, and product galleries.
+
+## System architecture
+
+```mermaid
+flowchart LR
+    Shopper["Shopper"] --> Web["Next.js storefront and assistant-ui chat"]
+    Web -->|Catalog, thumbnails, and chat| API["FastAPI"]
+    API -->|Chat requests| Agent["LangGraph shopping assistant"]
+    Agent -->|Guardrails and reply generation| OpenAI["OpenAI"]
+    Agent -->|catalog_search tool| Search["Shared catalog queries"]
+    API -->|Storefront reads| Search
+    Search --> DB[("PostgreSQL")]
+    API -->|Customer allowance| DB
+    API -->|Catalog thumbnails| R2[("Cloudflare R2")]
+    API -.->|API and model traces| Logfire["Logfire"]
+```
+
+| Component | Responsibility |
+| --- | --- |
+| [Next.js and assistant-ui](frontend/) | Render the storefront and chat, forward requests to FastAPI, and use the same product card in chat and catalog results. OpenNext packages the frontend for Cloudflare Workers. |
+| [FastAPI](backend/main.py) | Serves chat, session, catalog, media, and health endpoints. It manages chat identity and allowance before handing a message to the agent. |
+| [LangGraph and OpenAI](backend/chatbot/) | Run input and output checks, interpret the shopper’s request, call the catalog tool when needed, and hold conversation history in process. The default model is `gpt-4.1-mini`. |
+| [PostgreSQL, SQLModel, and Alembic](backend/models.py) | Store products, categories, size and color variants, stock quantities, image metadata, storage locations, and chat usage. Alembic manages schema changes. |
+| [Cloudflare R2](backend/catalog/storage.py) | Stores image originals and generated WebP thumbnails. Thumbnail URLs use the API through Next.js by default and can use a configured CDN. |
+| [Logfire](backend/main.py) | Traces FastAPI requests and OpenAI calls and records guardrail decisions and model failures. |
+
+## Chatbot architecture
+
+```mermaid
+sequenceDiagram
+    actor S as Shopper
+    participant W as Next.js
+    participant A as FastAPI
+    participant G as LangGraph
+    participant M as OpenAI
+    participant D as PostgreSQL
+
+    S->>W: Open Shopping chat
+    W->>A: POST /chat/session
+    A->>D: Resolve or create customer
+    A-->>W: Customer reference and remaining messages
+    S->>W: Send a shopping question
+    W->>A: POST /chat/stream with thread and message IDs
+    A->>A: Check for a cached reply
+    alt Previously completed turn
+        A-->>W: Replay the saved reply
+    else New turn
+        A->>D: Attempt to reserve one message
+        alt Allowance exhausted
+            A-->>W: HTTP 429 and support details
+        else Message reserved
+            A->>G: Run the turn
+            G->>M: Classify the input
+            alt Input blocked
+                G-->>A: Standard refusal
+            else Input allowed
+                G->>M: Generate a reply or select the catalog tool
+                opt Product search requested
+                    G->>D: Search published products with catalog filters
+                    D-->>G: Matching products
+                    G->>M: Generate an answer from the results
+                end
+                G->>M: Classify the complete reply
+                G-->>A: Approved reply and optional cards, or refusal
+            end
+            A-->>W: NDJSON reply, optional products, and done
+        end
+    end
+    W-->>S: Show the reply or limit notice
+```
+
+1. **Identify the customer and thread.** Opening the panel calls `POST /api/chat/session`. FastAPI issues or recognizes the customer cookie, stores its token hash in PostgreSQL, and returns a customer reference and remaining allowance. A thread UUID identifies the conversation within that customer’s session.
+2. **Reserve a turn and check intent.** On a new message, FastAPI atomically reserves one of the customer’s 20 default slots. The input guardrail classifies the latest message before the agent sees it. The shopping prompt handles ordinary greetings, directs product requests to the catalog tool, and provides a standard refusal for unrelated requests.
+3. **Retrieve product facts.** The model can call `catalog_search` with a full or partial title, keywords, audience, clothing type, size, color, price range, stock status, and sort order. The tool runs the same SQL search as the storefront. Size, color, and stock constraints apply to the same enabled variant when requested together. The tool provides compact product facts for the final model call and structured product summaries for the UI.
+4. **Check the reply and deliver it.** The output guardrail checks the complete reply for issues such as disclosure of internal instructions or unauthorized promises. A blocked turn returns the standard refusal and omits product cards. FastAPI sends the complete approved text or refusal in a `delta` event, then optional `products` and a final `done`. The response is newline-delimited JSON (NDJSON). The browser can stop an in-flight reply.
+5. **Keep approved context for follow-ups.** LangGraph stores approved, nonempty turns in memory, keyed by customer and thread. Closing and reopening the panel on the loaded page preserves the conversation. A page reload starts a new thread, and an API restart clears in-process history. PostgreSQL retains the allowance across both events. A completed response can be replayed with the same message ID while its thread remains in memory.
+
+## Catalog and operations
+
+Staff use the catalog CLI to create drafts, assign categories, manage variants, upload photos, and publish products. PostgreSQL records publication and image state. The CLI verifies image uploads and generates WebP thumbnails for storefront delivery. A Compose maintenance service can clean up retired media and reconcile storage against the database.
+
+[Catalog operations and demo data](backend/README.md#manage-the-clothing-catalog) · [Chat API and quota operations](backend/README.md#shopping-chat) · [CI workflow](.github/workflows/ci.yml)
+
+## Quick start
+
+From the repository root, copy [the backend environment example](backend/.env.example) to `backend/.env` and set `OPENAI_API_KEY` to enable chat. Then start the database and API with Docker Compose.
 
 ```sh
 docker compose up --build --wait
 curl -fsS http://127.0.0.1:8000/health/db
 ```
 
-Compose starts PostgreSQL, runs `alembic upgrade head`, and then starts FastAPI. The database check queries the `products` table from the initial migration. PostgreSQL data is stored in the `postgres-data` volume and survives `docker compose down`.
-
-Set `OPENAI_API_KEY` in `backend/.env` to enable chat. The database check and [FastAPI docs](http://127.0.0.1:8000/docs) work without a key.
-
-### Browse data in Adminer
-
-Open [Adminer](http://127.0.0.1:8080) and log in with **PostgreSQL** as the system, `db` as the server, `admin` as the username, `123` as the password, and `ecomm_assistant` as the database. The `admin` role has read-only access. Set `ADMINER_PORT` in the root `.env` to change the host port or `ADMINER_PASSWORD` to choose a password when the role is first created.
-
-### Run FastAPI on the host
-
-For live reload, run PostgreSQL in Docker and use `uv` for FastAPI:
-
-```sh
-docker compose up -d --wait db
-uv --directory backend run --locked alembic upgrade head
-uv --directory backend run --locked uvicorn main:app --reload
-```
-
-The local defaults are database `ecomm_assistant`, user `ecomm`, password `ecomm`, and port `5432`. To override them for Compose, set `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, or `POSTGRES_FORWARD_PORT` in the root `.env`. For a host-run API, set matching values in `backend/.env` using `POSTGRES_PORT` for the forwarded port, or set `DATABASE_URL` there to a PostgreSQL connection URL.
-
-The host-run API uses the Logfire credential saved by the wizard in the repository's `.logfire/` directory and reports as `ecomm-assistant-api` by default. Set `LOGFIRE_SEND_TO_LOGFIRE=false` in the shell to disable export, including when running local tests.
-
-In Logfire's **Live** view, expand a chat request to see the OpenAI call and its streamed response. Model traces include conversation content and token usage reported by OpenAI.
-
-After changing `backend/models.py`, generate and review a migration against the running database, then apply it:
-
-```sh
-uv --directory backend run --locked alembic revision --autogenerate -m "describe schema change"
-uv --directory backend run --locked alembic upgrade head
-```
-
-### Run the frontend
-
-Start Next.js from the repository root.
+In another terminal, run the storefront.
 
 ```sh
 cd frontend
@@ -52,98 +109,4 @@ pnpm install --frozen-lockfile
 pnpm dev
 ```
 
-Open [the homepage](http://localhost:3000). The frontend forwards messages to FastAPI at `http://127.0.0.1:8000`. To use another address, set `FASTAPI_URL` in `frontend/.env.local` and restart Next.js. FastAPI's interactive documentation is at [localhost:8000/docs](http://127.0.0.1:8000/docs).
-
-## Manage the clothing catalog
-
-Open [Shop clothing](http://localhost:3000/catalog) to browse published products. Migration `0002` adds categories, sizes and colors, image records, and storage locations. Existing products keep their IDs and names and start as drafts.
-
-### Connect private R2 storage
-
-Create a private bucket in Cloudflare R2 and create separate bucket-scoped credentials for the API and staff. Add the store’s ISO currency code and read-only credentials to `backend/.env` using this format. [Cloudflare R2 credentials](https://developers.cloudflare.com/r2/api/tokens/)
-
-```dotenv
-CATALOG_CURRENCY=USD
-CATALOG_STORAGE_CREDENTIALS='{"r2-catalog-dev-01":{"access_key_id":"<read-only-access-key>","secret_access_key":"<read-only-secret>"}}'
-```
-
-Use the store’s currency in place of the example USD. For staff commands, put the same currency and the following settings in `backend/.env.catalog-staff`. Keep production and development buckets and credentials separate.
-
-```dotenv
-CATALOG_CURRENCY=USD
-CATALOG_DEFAULT_STORAGE_ID=r2-catalog-dev-01
-CATALOG_STORAGE_CREDENTIALS='{"r2-catalog-dev-01":{"access_key_id":"<read-write-access-key>","secret_access_key":"<read-write-secret>"}}'
-```
-
-After applying migrations, define a local shell function and register the existing bucket. Use the full R2 S3 API endpoint shown by Cloudflare.
-
-```sh
-catalog() { uv --directory backend run --locked --env-file .env.catalog-staff python -m catalog "$@"; }
-catalog register-storage r2-catalog-dev-01 your-private-bucket https://YOUR_ACCOUNT_ID.r2.cloudflarestorage.com
-```
-
-### Create and publish a product
-
-Run `catalog list` to find legacy product IDs. This example uses product ID 1. Substitute the ID printed by `create` and use a real product photo.
-
-```sh
-catalog create 'Everyday T-shirt' --slug everyday-t-shirt --description 'A cotton crew-neck tee' --price-minor 2499
-catalog assign 1 audience:men audience:women clothing_type:t-shirts
-catalog variant 1 TEE-OLIVE-S S Olive 12
-catalog variant 1 TEE-OLIVE-M M Olive 0
-upload_id=$(uuidgen)
-catalog upload 1 /path/to/photo.jpg --id "$upload_id" --alt 'Olive crew-neck T-shirt, front view'
-catalog preview 1
-catalog publish 1
-```
-
-Prices are entered in minor units, so `2499` means 24.99 USD. Keep the same upload UUID and file when retrying. Supply `--replace OLD_IMAGE_UUID` with a fresh upload UUID to swap a photo in place. Use `catalog original IMAGE_UUID > original.jpg` to export the original, or `catalog image-order PRODUCT_ID IMAGE_UUID …` to choose the cover and order the gallery. Run `catalog --help` for the full command list.
-
-### Verify and maintain storage
-
-Publish a test product and verify its listing, detail page, and thumbnail. Download the original and compare it to the input. Run `catalog reconcile` to report missing ready images and old orphaned objects. Once verified, enable the Compose maintenance profile for hourly cleanup and daily reconciliation.
-
-```sh
-docker compose --profile catalog up -d catalog-maintenance
-```
-
-For a new bucket, register another storage ID and add its credentials to both configurations before changing the staff default. Use `catalog move-image IMAGE_UUID NEW_STORAGE_ID` to copy and verify both objects, then update the stored location. The cleanup process retains the old copy for 24 hours. Keep its credentials available until cleanup completes. Use `catalog reconcile --delete-orphans` to delete old orphaned objects after reviewing the report. Back up PostgreSQL before deployment and keep the R2 credentials available to verify delivery after a restore.
-
-### Seed the local demo catalog
-
-After applying migrations, register the R2 storage ID from `data/demo-products.json` and configure its credentials and the fixture currency in `backend/.env`. Run these commands from the repository root.
-
-```sh
-uv --directory backend run --locked python -m catalog seed-demo --dry-run
-uv --directory backend run --locked python -m catalog seed-demo
-```
-
-The seed command verifies the originals and thumbnails in R2, then publishes the fixture products in one database transaction. Run it again to restore the fixture. A stable demo key preserves each product ID and its published URL. The shared files under `demo-products/` stay available for future seed runs when a product image is removed from the catalog.
-
-### Run the catalog checks
-
-The integration test runs migrations in a temporary schema on a test PostgreSQL database and simulates R2 responses. Set `CATALOG_TEST_DATABASE_URL` to a disposable database whose role can create schemas.
-
-```sh
-CATALOG_TEST_DATABASE_URL=postgresql://user:password@localhost/catalog_test \
-  uv --directory backend run --locked python -m unittest discover -s tests
-```
-
-## Shopping chat
-
-Open **Shopping chat** in the bottom-right corner. An input guardrail checks each new message before the shopping agent runs. An output guardrail checks the complete reply before FastAPI sends it to the panel. **Stop** cancels the current reply. The assistant remembers approved turns in the loaded page, including when you close and reopen the panel. Reloading the page starts a new chat. History lives in one FastAPI process and is cleared when that process restarts.
-
-Opening the panel creates a customer reference and gives that browser 20 messages by default. Set `CHAT_MESSAGE_LIMIT` in `backend/.env` to a positive integer and restart the API to change the allowance. Usage lives in PostgreSQL after migration `0004` and follows the browser cookie across page reloads and API restarts. Clearing cookies or using another browser starts a separate allowance. Each accepted message uses one slot, including replies that fail or are stopped. Replaying a completed reply from the thread’s in-memory cache uses no additional slots.
-
-At the limit, the panel shows the support email and the reference the customer should share. Staff can restore the allowance by running one of these commands from the repository root, with the customer's reference in place of `CUSTOMER_ID`.
-
-```sh
-uv --directory backend run --locked python -m chatbot reset-quota CUSTOMER_ID
-docker compose exec api python -m chatbot reset-quota CUSTOMER_ID
-```
-
-The customer can select **Check again** or reopen the panel to resume chatting after the reset.
-
-FastAPI serves newline-delimited JSON at `POST /chat/stream`. A `delta` event delivers the approved reply or the standard refusal. For approved replies with matching products, a `products` event carries up to eight catalog summaries before `done`. Failed streams end with an `error` event. `POST /chat` returns `reply` and includes `products` when there are matches. Both accept `message` and an optional UUID `thread_id`. Reuse the same thread ID for follow-ups and optionally send a stable `message_id` to replay a completed reply. Requests without a thread ID have independent histories and share the same customer allowance.
-
-API clients can open or check an allowance via `POST /chat/session`. Keep sending the `ecomm_chat_customer` cookie to retain the same allowance. Either message endpoint can also issue the cookie on first use. The three endpoints return `X-Chat-Customer-Id`, `X-Chat-Messages-Remaining`, and `X-Chat-Support-Email` headers with the allowance. New messages above the limit return HTTP 429.
+Open the [storefront](http://localhost:3000) and select **Shopping chat** in the bottom-right corner. Publish a product or load the demo fixture to try product recommendations. [Demo catalog setup](backend/README.md#seed-the-local-demo-catalog) · [FastAPI interactive docs](http://127.0.0.1:8000/docs)
